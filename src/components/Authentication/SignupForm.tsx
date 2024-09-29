@@ -71,7 +71,7 @@ const SignupForm = () => {
       <Tab tabData={tabData} field={accountType} setField={setAccountType} />
       {/* Form */}
       <form onSubmit={handleOnSubmit} className="flex w-full flex-col gap-y-4">
-        <div className="flex gap-x-4">
+        <div className="flex md:flex-row flex-col gap-x-4 gap-y-4">
           <label>
             <p className="mb-1 text-[0.875rem] leading-[1.375rem]  lable-style ">
               First Name <sup className="text-pink-200">*</sup>
@@ -124,7 +124,7 @@ const SignupForm = () => {
             className="w-full rounded-[0.5rem]  p-[12px] form-style"
           />
         </label>
-        <div className="flex gap-x-4">
+        <div className="flex gap-x-4 flex-col md:flex-row gap-y-4">
           <label className="relative">
             <p className="mb-1 text-[0.875rem] leading-[1.375rem] lable-style">
               Create Password <sup className="text-pink-200">*</sup>

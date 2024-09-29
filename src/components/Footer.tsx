@@ -1,8 +1,10 @@
+"use client";
 import Link from "next/link";
 import React from "react";
 
 import { FaFacebook, FaGoogle, FaTwitter, FaYoutube } from "react-icons/fa";
 import { FooterLink } from "../../public/FooterLinks";
+import { usePathname } from "next/navigation";
 
 const BottomFooter = ["Privacy Policy", "Cookie Policy", "Terms of Service"];
 const Resources = [
@@ -19,6 +21,10 @@ const Plans = ["Membership Plans", "Student Discounts", "Loyalty Program"];
 const Community = ["Student Forums", "Course Reviews", "Events & Promotions"];
 
 const Footer = () => {
+  const pathname = usePathname();
+  const isAuthPage =
+    pathname.includes("login") || pathname.includes("register");
+  if (isAuthPage) return null;
   return (
     <div className="bg-[#161D29] ">
       <div className="flex lg:flex-row gap-8 items-center justify-between w-11/12 max-w-maxContent text-gray-400 leading-6 mx-auto relative py-14">
