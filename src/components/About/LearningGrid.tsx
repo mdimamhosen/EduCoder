@@ -1,5 +1,4 @@
 import React from "react";
-import HighlightText from "../Core/HighlightText";
 import CTAButton from "../Core/CTAButton";
 
 const LearningGridArray = [
@@ -63,7 +62,7 @@ const LearningGrid = () => {
               <div className="xl:w-[90%] flex flex-col gap-3 pb-10 xl:pb-0">
                 <div className="lg:text-4xl text-2xl text-gray-200 font-semibold ">
                   {card.heading}
-                  <HighlightText text={card.highliteText} />
+                  {/* <HighlightText text={card.heading} /> */}
                 </div>
                 <p className="text-gray-400 font-medium text-sm">
                   {card.description}
