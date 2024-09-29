@@ -1,19 +1,17 @@
-import Template from '@/components/Authentication/Template';
-import React from 'react';
+import Template from "@/components/Authentication/Template";
+import React from "react";
 
 const page = () => {
-    return (
-        <div>
-
+  return (
+    <div>
       <Template
-        title="Join the millions learning to code with EduCoder for free"
-        description1="Build skills for today, tomorrow, and beyond."
-        description2="Education to future-proof your career."
-        image={"signupImg"}
+        title="Unlock Your Future with EduCoder - The Ultimate Platform for CSE Learning"
+        description1="Master Computer Science & Engineering subjects with our expertly designed courses."
+        description2="Join EduCoder to gain the skills needed to excel in the tech-driven world."
         formType="signup"
       />
-        </div>
-    );
+    </div>
+  );
 };
 
 export default page;
