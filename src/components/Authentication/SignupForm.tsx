@@ -4,6 +4,7 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import Tab from "./Tab";
 import { ACCOUNT_TYPE } from "@/utils/roles";
 import toast from "react-hot-toast";
+import Link from "next/link";
 
 const SignupForm = () => {
   // student or instructor
@@ -87,6 +88,7 @@ const SignupForm = () => {
                 boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
               }}
               className="w-full rounded-[0.5rem]  p-[12px] form-style"
+              autoComplete="off"
             />
           </label>
           <label>
@@ -104,6 +106,7 @@ const SignupForm = () => {
                 boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
               }}
               className="w-full rounded-[0.5rem]  p-[12px] form-style"
+              autoComplete="off"
             />
           </label>
         </div>
@@ -122,6 +125,7 @@ const SignupForm = () => {
               boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
             }}
             className="w-full rounded-[0.5rem]  p-[12px] form-style"
+            autoComplete="off"
           />
         </label>
         <div className="flex gap-x-4 flex-col md:flex-row gap-y-4">
@@ -140,6 +144,7 @@ const SignupForm = () => {
                 boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
               }}
               className="w-full rounded-[0.5rem]  p-[12px] form-style"
+              autoComplete="new-password"
             />
             <span
               onClick={() => setShowPassword((prev) => !prev)}
@@ -167,6 +172,7 @@ const SignupForm = () => {
                 boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
               }}
               className="w-full rounded-[0.5rem]  p-[12px] form-style"
+              autoComplete="new-password"
             />
             <span
               onClick={() => setShowConfirmPassword((prev: any) => !prev)}
@@ -186,6 +192,12 @@ const SignupForm = () => {
         >
           Create Account
         </button>
+        <p className="text-gray-300 text-center">
+          Already have an account?{" "}
+          <Link href="/login" className="text-yellow-300  ">
+            Login
+          </Link>
+        </p>
       </form>
     </div>
   );

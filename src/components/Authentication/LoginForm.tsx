@@ -44,6 +44,7 @@ const LoginForm = () => {
               boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
             }}
             className="w-full rounded-[0.5rem]   p-[12px] form-style"
+            autoComplete="off"
           />
         </label>
         <label className="relative">
@@ -61,6 +62,7 @@ const LoginForm = () => {
               boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
             }}
             className="w-full rounded-[0.5rem]   p-[12px] pr-12  form-style"
+            autoComplete="new-password"
           />
           <span
             onClick={() => setShowPassword((prev) => !prev)}
@@ -84,6 +86,12 @@ const LoginForm = () => {
         >
           Sign In
         </button>
+        <p className="text-gray-300 text-center">
+          Don't have an account?{" "}
+          <Link href="/signup" className="text-yellow-300">
+            Signup
+          </Link>
+        </p>
       </form>
     </div>
   );
