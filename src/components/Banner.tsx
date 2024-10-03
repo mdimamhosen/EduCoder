@@ -98,7 +98,7 @@ const Banner = () => {
                 </div>
               }
               subheading={
-                "Go ahead, give it a try. Our hands-on learning environment means you'll be writing real code from your very first lesson."
+                "Go ahead, give it a try. Our hands-on learning environment means you&apos;ll be writing real code from your very first lesson."
               }
               ctabtn1={{
                 btnText: "Continue Lesson",

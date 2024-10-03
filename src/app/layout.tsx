@@ -5,6 +5,9 @@ import { Toaster } from "react-hot-toast";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 
+import AuthProvider from "./AuthProvider";
+import { Providers } from "@/redux/providers/provider";
+
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -19,7 +22,7 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: "EduCoder",
   description:
-    "EduCoder is an innovative educational technology platform designed to bridge the gap between students and tutors. Our platform offers a comprehensive suite of tools and resources to facilitate effective learning, personalized tutoring, and seamless access to educational materials. Whether you're a student seeking help or a tutor looking to share your expertise, EduCoder provides the perfect environment for educational growth and success.",
+    "EduCoder is an innovative educational technology platform designed to bridge the gap between students and tutors. Our platform offers a comprehensive suite of tools and resources to facilitate effective learning, personalized tutoring, and seamless access to educational materials. Whether you are a student seeking help or a tutor looking to share your expertise, EduCoder provides the perfect environment for educational growth and success.",
 };
 
 export default function RootLayout({
@@ -32,10 +35,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Navbar />
-        {children}
-        <Footer />
-        <Toaster />
+        <AuthProvider>
+          <Navbar />
+          <Providers> {children}</Providers>
+          <Footer />
+          <Toaster />
+        </AuthProvider>
       </body>
     </html>
   );

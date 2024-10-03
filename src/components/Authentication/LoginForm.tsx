@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { ChangeEvent, FormEvent, useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 const LoginForm = () => {
@@ -13,14 +13,14 @@ const LoginForm = () => {
 
   const { email, password } = formData;
 
-  const handleOnChange = (e: any) => {
-    setFormData((prevData: any) => ({
+  const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFormData((prevData) => ({
       ...prevData,
       [e.target.name]: e.target.value,
     }));
   };
 
-  const handleOnSubmit = (e: any) => {
+  const handleOnSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   };
   return (
@@ -87,8 +87,8 @@ const LoginForm = () => {
           Sign In
         </button>
         <p className="text-gray-300 text-center">
-          Don't have an account?{" "}
-          <Link href="/signup" className="text-yellow-300">
+          Do&apos;t have an account?{" "}
+          <Link href="/register" className="text-yellow-300">
             Signup
           </Link>
         </p>

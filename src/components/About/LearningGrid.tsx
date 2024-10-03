@@ -16,30 +16,35 @@ const LearningGridArray = [
     heading: "Tailored Learning Paths",
     description:
       "Save time and enhance your learning experience! EduCoder offers personalized learning paths designed to meet diverse educational needs, ensuring you learn at your own pace.",
+    BtnLink: "/courses",
   },
   {
     order: 2,
     heading: "Our Teaching Approach",
     description:
       "EduCoder leverages the latest in educational technology to provide a seamless, interactive, and engaging learning experience for all users.",
+    BtnLink: "/courses",
   },
   {
     order: 3,
     heading: "Secure and Private Learning Environment",
     description:
       "At EduCoder, we prioritize your privacy and security. Our platform ensures the highest level of security for your personal data and learning progress.",
+    BtnLink: "/courses",
   },
   {
     order: 4,
     heading: "Real-Time Progress Tracking",
     description:
       "EduCoder offers real-time progress tracking and analytics, empowering students to stay informed and motivated throughout their learning journey.",
+    BtnLink: "/courses",
   },
   {
     order: 5,
     heading: "24/7 Learning Support",
     description:
       "Our dedicated support team is available 24/7 to assist you with any questions or challenges, ensuring you have a smooth learning experience at all times.",
+    BtnLink: "/courses",
   },
 ];
 

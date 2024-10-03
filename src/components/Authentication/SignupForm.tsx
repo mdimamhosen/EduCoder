@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { ChangeEvent, FormEvent, useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import Tab from "./Tab";
 import { ACCOUNT_TYPE } from "@/utils/roles";
@@ -24,15 +24,15 @@ const SignupForm = () => {
   const { firstName, lastName, email, password, confirmPassword } = formData;
 
   // Handle input fields, when some value changes
-  const handleOnChange = (e: any) => {
-    setFormData((prevData: any) => ({
+  const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFormData((prevData) => ({
       ...prevData,
       [e.target.name]: e.target.value,
     }));
   };
 
   // Handle Form Submission
-  const handleOnSubmit = (e: any) => {
+  const handleOnSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
@@ -175,7 +175,7 @@ const SignupForm = () => {
               autoComplete="new-password"
             />
             <span
-              onClick={() => setShowConfirmPassword((prev: any) => !prev)}
+              onClick={() => setShowConfirmPassword((prev: boolean) => !prev)}
               className="absolute right-3 top-[38px] z-[10] cursor-pointer"
             >
               {showConfirmPassword ? (
