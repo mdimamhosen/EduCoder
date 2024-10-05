@@ -5,7 +5,7 @@ import { Toaster } from "react-hot-toast";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 
-import AuthProvider from "./AuthProvider";
+// import AuthProvider from "./AuthProvider";
 import { Providers } from "@/redux/providers/provider";
 
 const geistSans = localFont({
@@ -35,12 +35,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AuthProvider>
-          <Navbar />
-          <Providers> {children}</Providers>
-          <Footer />
-          <Toaster />
-        </AuthProvider>
+        {/* <AuthProvider> */}
+        <Navbar />
+        <Providers> {children}</Providers>
+        <Footer />
+        <Toaster />
+        {/* </AuthProvider> */}
       </body>
     </html>
   );

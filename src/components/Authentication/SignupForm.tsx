@@ -5,12 +5,25 @@ import Tab from "./Tab";
 import { ACCOUNT_TYPE } from "@/utils/roles";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import { useDispatch } from "react-redux";
+import { setSignupData } from "@/redux/slices/authSclice";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+interface signUpDetails {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
 
+  confirmPassword: string;
+  accountType?: string;
+}
 const SignupForm = () => {
-  // student or instructor
+  const dispatch = useDispatch();
   const [accountType, setAccountType] = useState(ACCOUNT_TYPE.STUDENT);
+  const [passAlert, setPassAlert] = useState("");
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<signUpDetails>({
     firstName: "",
     lastName: "",
     email: "",
@@ -29,17 +42,38 @@ const SignupForm = () => {
       ...prevData,
       [e.target.name]: e.target.value,
     }));
+    if (e.target.name === "password" && e.target.value.length < 8) {
+      setPassAlert("Must be 8");
+    }
   };
-
+  const router = useRouter();
   // Handle Form Submission
-  const handleOnSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleOnSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    if (password.length < 8) {
+      setPassAlert("Password must be of at least eight characters");
+      return;
+    }
     if (password !== confirmPassword) {
       toast.error("Passwords Do Not Match");
       return;
     }
-    console.log(formData);
+    formData.accountType = accountType;
+
+    dispatch(setSignupData(formData));
+    try {
+      // Send OTP request to the backend
+      const response = await axios.post("/api/send-otp", { email });
+      if (response.status === 200) {
+        toast.success("OTP sent to your email");
+        router.push("/register/verify-email");
+      } else {
+        toast.error("Failed to send OTP. Try again later.");
+      }
+    } catch (error) {
+      toast.error("An error occurred. Please try again.");
+      console.error("Error sending OTP:", error);
+    }
 
     // Reset
     setFormData({
@@ -156,6 +190,7 @@ const SignupForm = () => {
                 <AiOutlineEye fontSize={24} fill="#AFB2BF" />
               )}
             </span>
+            <p className="text-pink-100 mt-1 ">{passAlert}</p>
           </label>
           <label className="relative">
             <p className="mb-1 text-[0.875rem] leading-[1.375rem] lable-style">

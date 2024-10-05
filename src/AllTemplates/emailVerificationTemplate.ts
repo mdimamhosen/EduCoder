@@ -1,10 +1,11 @@
-const otpTemplate = (otp: any) => {
+const otpTemplate = (otp: string) => {
   return `<!DOCTYPE html>
 	<html>
 
 	<head>
 		<meta charset="UTF-8">
 		<title>OTP Verification Email</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<style>
 			body {
 				background-color: #ffffff;
@@ -23,9 +24,22 @@ const otpTemplate = (otp: any) => {
 				text-align: center;
 			}
 
-			.logo {
-				max-width: 200px;
-				margin-bottom: 20px;
+			.header {
+				background-color: #FFD60A;
+				color: #000000; !important;
+				width: 30%;
+				margin: 0 auto 10px auto;
+				padding: 7px;
+				border-radius: 5px;
+				text-align: center;
+				font-size: 24px;
+				font-weight: bold;
+			}
+
+			.headerContainer {
+				display: flex;
+				justify-content: center;
+				align-items: center;
 			}
 
 			.message {
@@ -60,25 +74,72 @@ const otpTemplate = (otp: any) => {
 			.highlight {
 				font-weight: bold;
 			}
+
+			/* Media Query for Mobile and Tablet */
+			@media only screen and (max-width: 768px) {
+				.container {
+					padding: 10px;
+				}
+
+				.header {
+					width: 50%;
+					font-size: 20px;
+				}
+
+				.body {
+					font-size: 14px;
+				}
+
+				.cta {
+					font-size: 14px;
+					padding: 8px 16px;
+				}
+
+				.support {
+					font-size: 12px;
+				}
+			}
+
+			@media only screen and (max-width: 480px) {
+				.header {
+					width: 70%;
+					font-size: 18px;
+				}
+
+				.body {
+					font-size: 13px;
+				}
+
+				.cta {
+					font-size: 13px;
+					padding: 6px 14px;
+				}
+
+				.support {
+					font-size: 11px;
+				}
+			}
 		</style>
 
 	</head>
 
 	<body>
 		<div class="container">
-			<a href="https://studynotion-edtech-project.vercel.app"><img class="logo"
-					src="https://i.ibb.co/7Xyj3PC/logo.png" alt="StudyNotion Logo"></a>
-			<div class="message">OTP Verification Email</div>
+			<div class="headerContainer">
+				<div class="header">EduCoder</div>
+			</div>
 			<div class="body">
 				<p>Dear User,</p>
-				<p>Thank you for registering with StudyNotion. To complete your registration, please use the following OTP
+				<p>Thank you for registering with EduCoder. To complete your registration, please use the following OTP
 					(One-Time Password) to verify your account:</p>
 				<h2 class="highlight">${otp}</h2>
 				<p>This OTP is valid for 5 minutes. If you did not request this verification, please disregard this email.
 				Once your account is verified, you will have access to our platform and its features.</p>
 			</div>
-			<div class="support">If you have any questions or need assistance, please feel free to reach out to us at <a
-					href="mailto:info@studynotion.com">info@studynotion.com</a>. We are here to help!</div>
+			<div class="support">
+				If you have any questions or need assistance, please feel free to reach out to us at
+				<a href="mailto:info@educoder.com">info@educoder.com</a>. We are here to help!
+			</div>
 		</div>
 	</body>
 

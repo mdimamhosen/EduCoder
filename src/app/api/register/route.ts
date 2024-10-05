@@ -1,8 +1,8 @@
 import { OTP } from "@/model/OTP";
-import { User } from "@/model/User";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { Profile } from "@/model/Profile";
+import User from "@/model/User";
 export async function POST(request: Request) {
   try {
     const {
@@ -12,7 +12,6 @@ export async function POST(request: Request) {
       password,
       confirmPassword,
       accountType,
-      contactNumber,
       otp,
     } = await request.json();
 
@@ -81,7 +80,7 @@ export async function POST(request: Request) {
       firstName,
       lastName,
       email,
-      contactNumber,
+
       password: hashedPassword,
       accountType: accountType,
       approved: approved,

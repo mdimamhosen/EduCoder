@@ -1,11 +1,14 @@
+import DatabaseConnection from "@/lib/DBconnect";
 import { OTP } from "@/model/OTP";
-import { User } from "@/model/User";
+import User from "@/model/User";
 import { NextResponse } from "next/server";
 import otpGenerator from "otp-generator";
 
 export async function POST(request: Request) {
+  await DatabaseConnection();
   try {
     const { email } = await request.json();
+    console.log("Email", email);
 
     // Check if the email is valid
     if (!email) {
@@ -37,6 +40,8 @@ export async function POST(request: Request) {
         upperCaseAlphabets: false,
       });
     }
+    console.log(typeof otp);
+    console.log(typeof email);
     const otpPayload = { email, otp };
     const otpBody = await OTP.create(otpPayload);
     console.log("OTP Body", otpBody);
