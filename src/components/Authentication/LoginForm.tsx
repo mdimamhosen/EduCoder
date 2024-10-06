@@ -1,14 +1,21 @@
 "use client";
+import { setLoading } from "@/redux/slices/profileSlice";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { ChangeEvent, FormEvent, useState } from "react";
+import toast from "react-hot-toast";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { useDispatch, useSelector } from "react-redux";
+import { signIn } from "next-auth/react";
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-
+  const loading = useSelector((state) => state.auth.loading);
+  const dispatch = useDispatch();
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
 
   const { email, password } = formData;
@@ -20,9 +27,37 @@ const LoginForm = () => {
     }));
   };
 
-  const handleOnSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleOnSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (email === "" || password === "") {
+      toast.error("Please fill all the fields");
+      return;
+    }
+
+    dispatch(setLoading(true));
+
+    try {
+      const response = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (response?.error) {
+        toast.error(response.error);
+      } else {
+        toast.success("Login successful!");
+        router.replace("/");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error("Something went wrong, please try again");
+    } finally {
+      dispatch(setLoading(false));
+    }
   };
+
   return (
     <div>
       <form
@@ -35,15 +70,12 @@ const LoginForm = () => {
           </p>
           <input
             required
-            type="text"
+            type="email"
             name="email"
             value={email}
             onChange={handleOnChange}
             placeholder="Enter email address"
-            style={{
-              boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
-            }}
-            className="w-full rounded-[0.5rem]   p-[12px] form-style"
+            className="w-full rounded-[0.5rem] p-[12px] form-style"
             autoComplete="off"
           />
         </label>
@@ -58,10 +90,7 @@ const LoginForm = () => {
             value={password}
             onChange={handleOnChange}
             placeholder="Enter Password"
-            style={{
-              boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
-            }}
-            className="w-full rounded-[0.5rem]   p-[12px] pr-12  form-style"
+            className="w-full rounded-[0.5rem] p-[12px] pr-12 form-style"
             autoComplete="new-password"
           />
           <span
@@ -75,21 +104,28 @@ const LoginForm = () => {
             )}
           </span>
           <Link href="/forgot-password">
-            <p className="mt-1 ml-auto max-w-max text-xs text-blue-100 hover:underline hover:underline-bg-[#070] transition-all duration-300 ease-linear">
+            <p className="mt-1 ml-auto max-w-max text-xs text-blue-100 hover:underline transition-all duration-300 ease-linear">
               Forgot Password
             </p>
           </Link>
         </label>
         <button
           type="submit"
-          className="mt-6 rounded-[8px] bg-yellow-400 py-[8px] px-[12px] hover:scale-95 transition-all duration-300 ease-linear font-semibold text-gray-950"
+          className={`mt-6 rounded-[8px] bg-yellow-400 py-[8px] px-[12px]
+                      ${
+                        loading
+                          ? "opacity-50 cursor-not-allowed"
+                          : "hover:scale-95"
+                      }
+                      transition-all duration-300 ease-linear font-semibold text-gray-950`}
+          disabled={loading}
         >
-          Sign In
+          {loading ? "Signing In..." : "Sign In"}
         </button>
         <p className="text-gray-300 text-center">
-          Do&apos;t have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link href="/register" className="text-yellow-300">
-            Signup
+            Register
           </Link>
         </p>
       </form>

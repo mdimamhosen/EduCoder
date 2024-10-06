@@ -6,7 +6,7 @@ import { ACCOUNT_TYPE } from "@/utils/roles";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
-import { setSignupData } from "@/redux/slices/authSclice";
+import { setLoading, setSignupData } from "@/redux/slices/authSclice";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 interface signUpDetails {
@@ -61,6 +61,8 @@ const SignupForm = () => {
     formData.accountType = accountType;
 
     dispatch(setSignupData(formData));
+    dispatch(setLoading(true));
+
     try {
       // Send OTP request to the backend
       const response = await axios.post("/api/send-otp", { email });
@@ -70,9 +72,11 @@ const SignupForm = () => {
       } else {
         toast.error("Failed to send OTP. Try again later.");
       }
+      dispatch(setLoading(false));
     } catch (error) {
       toast.error("An error occurred. Please try again.");
       console.error("Error sending OTP:", error);
+      dispatch(setLoading(false));
     }
 
     // Reset
