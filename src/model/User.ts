@@ -2,29 +2,30 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
-    // Define the name field with type String, required, and trimmed
     firstName: {
       type: String,
       trim: true,
+      required: true,
     },
     lastName: {
       type: String,
       trim: true,
+      required: true,
     },
-    // Define the email field with type String, required, and trimmed
     email: {
       type: String,
       trim: true,
+      required: true,
+      unique: true,
     },
-
-    // Define the password field with type String and required
     password: {
       type: String,
+      required: true,
     },
-    // Define the role field with type String and enum values of "Admin", "Student", or "Visitor"
     accountType: {
       type: String,
       enum: ["Admin", "Student", "Instructor"],
+      required: true,
     },
     active: {
       type: Boolean,
@@ -36,12 +37,12 @@ const userSchema = new mongoose.Schema(
     },
     additionalDetails: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Profile",
+      ref: "profileSchema",
     },
     courses: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Course",
+        ref: "coursesSchema",
       },
     ],
     token: {
