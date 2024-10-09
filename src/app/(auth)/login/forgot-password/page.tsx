@@ -27,9 +27,9 @@ const ForgetPassword = () => {
       if (response.status === 200) {
         setEmailSent(true);
         toast.success(response.data.message);
-        router.push("/login/update-password");
+        // router.push("/login/update-password");
       } else {
-        toast.error("Failed to send reset email. Please try again.");
+        toast.error(response.data.message);
       }
     } catch (error: unknown) {
       if (axios.isAxiosError(error) && error.response) {
