@@ -10,10 +10,11 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 function VerifyEmail() {
+  const router = useRouter();
   const [otp, setOtp] = useState<string>("");
   const [OTPLoading, setOTPLoading] = useState(false); // Loading state for Resend OTP
   const { signupData } = useSelector((store) => store.auth);
-  const router = useRouter();
+
   const [loading, setLoading] = useState(false); // Loading state for the form submission
 
   useEffect(() => {
@@ -55,6 +56,7 @@ function VerifyEmail() {
 
       if (response.status === 200) {
         toast.success("Account Created Successfully");
+        router.push("/login");
         // Add any redirection here if needed, e.g., to login page
       } else {
         toast.error("Invalid OTP. Please try again later.");
