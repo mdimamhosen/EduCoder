@@ -6,7 +6,7 @@ import { ACCOUNT_TYPE } from "@/utils/roles";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
-import { setLoading, setSignupData } from "@/redux/slices/authSclice";
+import { setSignupData } from "@/redux/slices/authSclice";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 interface signUpDetails {
@@ -19,6 +19,7 @@ interface signUpDetails {
   accountType?: string;
 }
 const SignupForm = () => {
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const [accountType, setAccountType] = useState(ACCOUNT_TYPE.STUDENT);
   const [passAlert, setPassAlert] = useState("");
@@ -61,7 +62,7 @@ const SignupForm = () => {
     formData.accountType = accountType;
 
     dispatch(setSignupData(formData));
-    dispatch(setLoading(true));
+    setLoading(true);
 
     try {
       // Send OTP request to the backend
@@ -72,11 +73,11 @@ const SignupForm = () => {
       } else {
         toast.error("Failed to send OTP. Try again later.");
       }
-      dispatch(setLoading(false));
+      setLoading(false);
     } catch (error) {
       toast.error("An error occurred. Please try again.");
       console.error("Error sending OTP:", error);
-      dispatch(setLoading(false));
+      setLoading(false);
     }
 
     // Reset
@@ -227,9 +228,12 @@ const SignupForm = () => {
         </div>
         <button
           type="submit"
-          className="mt-6 rounded-[8px] bg-yellow-400 py-[8px] px-[12px] transition-all duration-300   text-gray-950 font-semibold hover:scale-95 "
+          disabled={loading}
+          className={`mt-6 rounded-[8px] bg-yellow-400 py-[8px] px-[12px] transition-all duration-300   text-gray-950 font-semibold hover:scale-95 ${
+            loading ? "opacity-50 cursor-not-allowed" : "hover:scale-95"
+          } `}
         >
-          Create Account
+          {loading ? "Sending OTP..." : "Create Account"}
         </button>
         <p className="text-gray-300 text-center">
           Already have an account?{" "}

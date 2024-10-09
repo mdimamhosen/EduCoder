@@ -17,7 +17,7 @@ function Template({
   const loading = false;
 
   return (
-    <div className="grid min-h-[calc(100vh-3rem)] bg-slate-900 place-items-center">
+    <div className="grid min-h-[calc(100vh-3.5rem)] bg-slate-900 place-items-center">
       {loading ? (
         <div className="spinner"></div>
       ) : (

@@ -31,6 +31,15 @@ export async function POST(request: Request) {
       });
     }
     // Check if password and confirm password match
+    console.log({
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      password: password,
+      confirmPassword: confirmPassword,
+      accountType: accountType,
+      otp: otp,
+    });
     if (password !== confirmPassword) {
       return NextResponse.json({
         success: false,
@@ -40,6 +49,8 @@ export async function POST(request: Request) {
     }
     // Check if user already exists
     const existingUser = await User.findOne({ email });
+    console.log("existingUser", existingUser);
+
     if (existingUser) {
       return NextResponse.json({
         success: false,
@@ -49,19 +60,23 @@ export async function POST(request: Request) {
 
     // Find the most recent OTP for the email
     const response = await OTP.findOne({ email }).sort({ createdAt: -1 });
-    console.log(response);
+    console.log("response Form OTP", response);
     if (!response) {
       // OTP not found for the email
       return NextResponse.json({
         success: false,
         message: "The OTP is not valid",
       });
-    } else if (otp !== response?.otp) {
+    }
+    if (otp !== response?.otp) {
       // Invalid OTP
-      return NextResponse.json({
-        success: false,
-        message: "The OTP is not valid",
-      });
+      return NextResponse.json(
+        {
+          success: false,
+          message: "The OTP is not valid",
+        },
+        { status: 400 }
+      );
     }
 
     // Hash the password
@@ -77,6 +92,9 @@ export async function POST(request: Request) {
       about: null,
       contactNumber: null,
     });
+    const defaultProfileImage =
+      "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y";
+
     const user = await User.create({
       firstName,
       lastName,
@@ -85,8 +103,9 @@ export async function POST(request: Request) {
       accountType: accountType,
       approved: approved,
       additionalDetails: profileDetails._id,
-      image: "",
+      image: defaultProfileImage,
     });
+    console.log("user", user);
 
     return NextResponse.json({
       success: true,

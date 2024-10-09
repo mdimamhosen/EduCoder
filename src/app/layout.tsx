@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 
 // import AuthProvider from "./AuthProvider";
 import { Providers } from "@/redux/providers/provider";
+import AuthProvider from "./AuthProvider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -35,12 +36,26 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* <AuthProvider> */}
-        <Navbar />
-        <Providers> {children}</Providers>
-        <Footer />
-        <Toaster />
-        {/* </AuthProvider> */}
+        <AuthProvider>
+          <Providers>
+            <Navbar />
+
+            {children}
+          </Providers>
+          <Footer />
+          <Toaster
+            position="bottom-right"
+            toastOptions={{
+              duration: 5000,
+              error: {
+                style: {
+                  background: "black",
+                  color: "#fff",
+                },
+              },
+            }}
+          />
+        </AuthProvider>
       </body>
     </html>
   );

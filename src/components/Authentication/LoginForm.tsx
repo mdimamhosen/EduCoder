@@ -1,19 +1,22 @@
 "use client";
-import { setLoading } from "@/redux/slices/profileSlice";
+import { setLoading, setUser } from "@/redux/slices/profileSlice";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import toast from "react-hot-toast";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 
 const LoginForm = () => {
+  const { data: session } = useSession();
+  const token = session?.user;
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-  const loading = useSelector((state) => state.auth.loading);
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
@@ -35,8 +38,7 @@ const LoginForm = () => {
       return;
     }
 
-    dispatch(setLoading(true));
-
+    setLoading(true);
     try {
       const response = await signIn("credentials", {
         email,
@@ -48,13 +50,14 @@ const LoginForm = () => {
         toast.error(response.error);
       } else {
         toast.success("Login successful!");
+        dispatch(setUser(token));
         router.replace("/");
       }
     } catch (error) {
       console.error("Login error:", error);
       toast.error("Something went wrong, please try again");
     } finally {
-      dispatch(setLoading(false));
+      setLoading(false);
     }
   };
 
@@ -76,7 +79,6 @@ const LoginForm = () => {
             onChange={handleOnChange}
             placeholder="Enter email address"
             className="w-full rounded-[0.5rem] p-[12px] form-style"
-            autoComplete="off"
           />
         </label>
         <label className="relative">
@@ -103,7 +105,7 @@ const LoginForm = () => {
               <AiOutlineEye fontSize={24} fill="#AFB2BF" />
             )}
           </span>
-          <Link href="/forgot-password">
+          <Link href="/login/forgot-password">
             <p className="mt-1 ml-auto max-w-max text-xs text-blue-100 hover:underline transition-all duration-300 ease-linear">
               Forgot Password
             </p>
