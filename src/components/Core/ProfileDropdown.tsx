@@ -10,7 +10,7 @@ import { VscDashboard, VscSignOut } from "react-icons/vsc";
 import { useSelector } from "react-redux";
 
 const ProfileDropdown = () => {
-  const { user } = useSelector((state) => state.profile);
+  const { user } = useSelector((state ) => state.profile);
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);

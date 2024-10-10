@@ -3,7 +3,11 @@ import { NavbarLinks } from "@/data/NavbarLinks";
 import { ACCOUNT_TYPE } from "@/utils/roles";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { AiOutlineMenu, AiOutlineShoppingCart } from "react-icons/ai";
+import {
+  AiOutlineMenu,
+  AiOutlineClose,
+  AiOutlineShoppingCart,
+} from "react-icons/ai";
 import { BsChevronDown } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import { usePathname } from "next/navigation";
@@ -15,11 +19,19 @@ const Navbar = () => {
   const pathname = usePathname();
   const { data: session, status } = useSession();
   const token = session?.user;
-  console.log("session", session);
+  const [catalogOpen, setCatalogOpen] = useState(false);
 
   const { user, loading } = useSelector((state) => state.profile);
   const { totalItems } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
+  const [activeSubMenu, setActiveSubMenu] = useState<string | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [subLinks, setSubLinks] = useState([
+    { name: "Data Structures", courses: ["Array", "LinkedList", "Tree"] },
+    { name: "Algorithms", courses: ["Sorting", "Graph Algorithms"] },
+    { name: "Python", courses: ["Basics", "OOP"] },
+    { name: "JavaScript", courses: ["ES6", "React"] },
+  ]);
 
   useEffect(() => {
     const updateUserState = async () => {
@@ -28,7 +40,6 @@ const Navbar = () => {
       } else if (status === "authenticated" && session?.user) {
         dispatch(setLoading(true));
         try {
-          // You might want to fetch additional user data here if needed
           dispatch(setUser(session.user));
         } catch (error) {
           console.error("Error fetching user data:", error);
@@ -44,15 +55,37 @@ const Navbar = () => {
     updateUserState();
   }, [session, status, dispatch]);
 
-  const [subLinks, setSubLinks] = useState([
-    { name: "Data Structures", courses: ["Array", "LinkedList", "Tree"] },
-    { name: "Algorithms", courses: ["Sorting", "Graph Algorithms"] },
-    { name: "Python", courses: ["Basics", "OOP"] },
-    { name: "JavaScript", courses: ["ES6", "React"] },
-  ]);
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
+
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false);
+  };
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const matchRoute = (route: string) => {
     return pathname === route;
+  };
+  const toggleSubMenu = (subLinkName: string) => {
+    setActiveSubMenu((prev) => (prev === subLinkName ? null : subLinkName));
+  };
+  const toggleCatalog = () => {
+    setCatalogOpen(!catalogOpen);
   };
 
   return (
@@ -61,6 +94,13 @@ const Navbar = () => {
         pathname !== "/" ? "bg-gray-950" : "bg-gray-900"
       } transition-all duration-300`}
     >
+      <button className="ml-4 mr-4 md:hidden" onClick={toggleMobileMenu}>
+        {mobileMenuOpen ? (
+          <AiOutlineClose fontSize={24} fill="#AFB2BF" />
+        ) : (
+          <AiOutlineMenu fontSize={24} fill="#AFB2BF" />
+        )}
+      </button>
       <div className="flex w-11/12 max-w-maxContent items-center justify-between">
         <Link href="/">
           <p className="text-2xl font-extrabold leading-8 text-gray-300">
@@ -68,7 +108,7 @@ const Navbar = () => {
           </p>
         </Link>
 
-        {/* Navigation links */}
+        {/* Desktop Navigation */}
         <nav className="hidden md:block">
           <ul className="flex gap-x-6 ">
             {NavbarLinks.map((link, index) => (
@@ -135,7 +175,7 @@ const Navbar = () => {
         </nav>
 
         {/* Login / Signup / Dashboard */}
-        <div className="hidden items-center gap-x-3 md:flex ">
+        <div className="hidden items-center gap-x-3 md:flex">
           {user && user.accountType !== ACCOUNT_TYPE.INSTRUCTOR && (
             <Link href="/dashboard/cart" className="relative">
               <AiOutlineShoppingCart className="text-2xl text-gray-300" />
@@ -149,12 +189,12 @@ const Navbar = () => {
           {!token && (
             <>
               <Link href="/login">
-                <button className="rounded border border-gray-300 bg-gray-700 px-[8px] py-[4px] text-gray-300 hover:bg-gray-800 hover:text-gray-200 hover:scale-95 transition-all duration-300 ease-linear ">
+                <button className="rounded border border-gray-300 bg-gray-700 px-[8px] py-[4px] text-gray-300 hover:bg-gray-800 hover:text-gray-200 hover:scale-95 transition-all duration-300 ease-linear">
                   Log in
                 </button>
               </Link>
               <Link href="/register">
-                <button className="rounded border border-gray-300 bg-gray-700 px-[8px] py-[4px] text-gray-300 hover:bg-gray-800 hover:text-gray-200 hover:scale-95 transition-all duration-300 ease-linear ">
+                <button className="rounded border border-gray-300 bg-gray-700 px-[8px] py-[4px] text-gray-300 hover:bg-gray-800 hover:text-gray-200 hover:scale-95 transition-all duration-300 ease-linear">
                   Sign up
                 </button>
               </Link>
@@ -168,10 +208,87 @@ const Navbar = () => {
             </p>
           )}
         </div>
+      </div>
 
-        <button className="mr-4 md:hidden">
-          <AiOutlineMenu fontSize={24} fill="#AFB2BF" />
-        </button>
+      {/* Mobile Menu */}
+      {/* Mobile Menu */}
+      <div
+        className={`fixed md:hidden top-0 left-0 h-full w-[75%] bg-gray-900 z-50 transform ${
+          mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+        } transition-transform duration-300 ease-in-out`}
+      >
+        <div className="flex flex-col p-6">
+          <button className="self-end text-white" onClick={closeMobileMenu}>
+            <AiOutlineClose fontSize={24} />
+          </button>
+          <nav className="mt-6">
+            <ul className="flex flex-col gap-6">
+              {NavbarLinks.map((link, index) => (
+                <li key={index}>
+                  {link.title === "Catalog" ? (
+                    <div className="flex items-center cursor-pointer">
+                      <p
+                        className={`text-gray-300 flex justify-center items-center gap-2 ${
+                          catalogOpen ? "text-yellow-400" : ""
+                        }`}
+                      >
+                        {link.title}{" "}
+                        <BsChevronDown
+                          onClick={toggleCatalog}
+                          className={`transition-transform ${
+                            catalogOpen ? "rotate-180" : ""
+                          }`}
+                        />
+                      </p>
+                    </div>
+                  ) : (
+                    <Link
+                      href={link.path as string}
+                      className={`text-gray-300 ${
+                        matchRoute(link.path as string) ? "text-yellow-400" : ""
+                      }`}
+                    >
+                      {link.title}
+                    </Link>
+                  )}
+
+                  {/* Mobile Sublinks */}
+                  {link.title === "Catalog" && catalogOpen && (
+                    <div className="pl-6">
+                      {loading ? (
+                        <p className="text-center text-gray-300">Loading...</p>
+                      ) : subLinks && subLinks.length ? (
+                        subLinks.map((subLink, i) => (
+                          <div key={i} className="mb-4">
+                            <p className="font-semibold text-gray-300">
+                              {subLink.name}
+                            </p>
+                            {subLink.courses.map((course, j) => (
+                              <Link
+                                key={j}
+                                href={`/catalog/${subLink.name
+                                  .split(" ")
+                                  .join("-")
+                                  .toLowerCase()}/${course.toLowerCase()}`}
+                                className="block rounded-lg bg-transparent py-2 pl-4 text-gray-300 hover:bg-gray-800"
+                              >
+                                {course}
+                              </Link>
+                            ))}
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-center text-gray-300">
+                          No Courses Found
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
       </div>
     </div>
   );
