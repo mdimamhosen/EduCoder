@@ -118,7 +118,6 @@ const Navbar = () => {
           </div>
         </Link>
 
-        {/* Desktop Navigation */}
         <nav className="hidden md:block  ">
           <ul className="flex gap-x-6 ">
             {NavbarLinks.map((link, index) => (
