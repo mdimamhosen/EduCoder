@@ -23,7 +23,9 @@ const Community = ["Student Forums", "Course Reviews", "Events & Promotions"];
 const Footer = () => {
   const pathname = usePathname();
   const isAuthPage =
-    pathname.includes("login") || pathname.includes("register");
+    pathname.includes("login") ||
+    pathname.includes("register") ||
+    pathname.includes("dashboard");
   if (isAuthPage) return null;
   return (
     <div className="bg-[#161D29] ">

@@ -3,7 +3,7 @@ import { FaArrowLeft } from "react-icons/fa";
 
 function NotFound() {
   return (
-    <div className="flex flex-col justify-center items-center flex-1 min-h-screen text-white bg-gray-800">
+    <div className="flex flex-col justify-center items-center flex-1 min-h-[calc(100vh-3.5rem)] text-white bg-gray-800">
       {/* Main Content Wrapper */}
       <div className="flex flex-col items-center gap-8 p-8 rounded-lg    max-w-[500px] w-full mx-4 md:mx-0">
         {/* Error Message */}

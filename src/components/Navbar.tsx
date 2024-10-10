@@ -2,7 +2,7 @@
 import { NavbarLinks } from "@/data/NavbarLinks";
 import { ACCOUNT_TYPE } from "@/utils/roles";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import {
   AiOutlineMenu,
   AiOutlineClose,
@@ -13,18 +13,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import ProfileDropdown from "./Core/ProfileDropdown";
-import { setLoading, setUser } from "@/redux/slices/profileSlice";
+import { setLoading, setNavOpen, setUser } from "@/redux/slices/profileSlice";
 
 const Navbar = () => {
   const pathname = usePathname();
   const { data: session, status } = useSession();
   const token = session?.user;
+
   const [catalogOpen, setCatalogOpen] = useState(false);
 
-  const { user, loading } = useSelector((state) => state.profile);
+  const { user, loading, isNavOpen } = useSelector((state) => state.profile);
   const { totalItems } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
-  const [activeSubMenu, setActiveSubMenu] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [subLinks, setSubLinks] = useState([
     { name: "Data Structures", courses: ["Array", "LinkedList", "Tree"] },
@@ -58,6 +58,15 @@ const Navbar = () => {
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
+  useEffect(() => {
+    //  here i want to make the isNavOpen true when the mobileMenuOpen is true
+    if (mobileMenuOpen) {
+      dispatch(setNavOpen(true));
+    } else {
+      dispatch(setNavOpen(false));
+    }
+  }, [mobileMenuOpen, dispatch]);
+  console.log("isNavOpen in navbar", isNavOpen);
 
   const closeMobileMenu = () => {
     setMobileMenuOpen(false);
@@ -81,9 +90,7 @@ const Navbar = () => {
   const matchRoute = (route: string) => {
     return pathname === route;
   };
-  const toggleSubMenu = (subLinkName: string) => {
-    setActiveSubMenu((prev) => (prev === subLinkName ? null : subLinkName));
-  };
+
   const toggleCatalog = () => {
     setCatalogOpen(!catalogOpen);
   };
@@ -103,9 +110,12 @@ const Navbar = () => {
       </button>
       <div className="flex w-11/12 max-w-maxContent items-center justify-between  ">
         <Link href="/">
-          <p className="text-2xl font-extrabold leading-8 text-gray-300">
-            EduCoder
-          </p>
+          <div className="flex justify-center items-center gap-1">
+            <div className="flex justify-center items-center bg-gray-200 border border-gray-400 rounded-full h-10 w-10">
+              <span className="text-xl font-extrabold text-gray-700  ">EC</span>
+            </div>
+            <p className="text-2xl font-extrabold text-gray-200">EduCoder</p>
+          </div>
         </Link>
 
         {/* Desktop Navigation */}
@@ -174,7 +184,7 @@ const Navbar = () => {
           </ul>
         </nav>
 
-        {/* Login / Signup / Dashboard */}
+        {/* Login / Register / Dashboard */}
         <div className="  items-center gap-x-3  flex mr-4 md:mr-0">
           {user && user.accountType !== ACCOUNT_TYPE.INSTRUCTOR && (
             <Link href="/dashboard/cart" className="relative">
@@ -252,7 +262,7 @@ const Navbar = () => {
                     </Link>
                   )}
 
-                  {/* Mobile Sublinks */}
+                  {/* Mobile Sub-links */}
                   {link.title === "Catalog" && catalogOpen && (
                     <div className="pl-6">
                       {loading ? (

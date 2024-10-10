@@ -8,12 +8,31 @@ import { useRouter } from "next/navigation";
 import { AiOutlineCaretDown } from "react-icons/ai";
 import { VscDashboard, VscSignOut } from "react-icons/vsc";
 import { useSelector } from "react-redux";
-
+import toast from "react-hot-toast";
+import ConfirmationModal from "../Dashboard/ConfirmationModal";
+interface ModalData {
+  text1: string;
+  text2: string;
+  btn1Text: string;
+  btn2Text: string;
+  btn1Handler: () => void;
+  btn2Handler: () => void;
+}
 const ProfileDropdown = () => {
-  const { user } = useSelector((state ) => state.profile);
+  const { user } = useSelector((state) => state.profile);
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const [confirmationModal, setConfirmationModal] = useState<ModalData | null>(
+    null
+  );
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: "/" });
+    router.push("/");
+    toast.success("Logged out successfully");
+    setOpen(false);
+    setConfirmationModal(null);
+  };
 
   useOnClickOutside(ref, () => setOpen(false));
 
@@ -47,11 +66,16 @@ const ProfileDropdown = () => {
               </div>
             </Link>
             <div
-              onClick={() => {
-                signOut();
-                router.push("/");
-                setOpen(false);
-              }}
+              onClick={() =>
+                setConfirmationModal({
+                  text1: "Are you sure?",
+                  text2: "You will be logged out of your account.",
+                  btn1Text: "Logout",
+                  btn2Text: "Cancel",
+                  btn1Handler: handleLogout,
+                  btn2Handler: () => setConfirmationModal(null),
+                })
+              }
               className="flex w-full items-center gap-x-1 py-[10px] px-[12px] text-sm   hover:bg-gray-600 hover:text-gray-200 text-gray-300"
             >
               <VscSignOut className="text-lg" />
@@ -60,6 +84,7 @@ const ProfileDropdown = () => {
           </div>
         )}
       </button>
+      {confirmationModal && <ConfirmationModal modalData={confirmationModal} />}
     </div>
   );
 };
