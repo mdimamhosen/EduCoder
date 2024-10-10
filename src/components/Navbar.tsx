@@ -92,7 +92,7 @@ const Navbar = () => {
     <div
       className={`flex h-14 items-center justify-center border-b-[1px] border-b-gray-300 ${
         pathname !== "/" ? "bg-gray-950" : "bg-gray-900"
-      } transition-all duration-300`}
+      } transition-all duration-300  `}
     >
       <button className="ml-4 mr-4 md:hidden" onClick={toggleMobileMenu}>
         {mobileMenuOpen ? (
@@ -101,7 +101,7 @@ const Navbar = () => {
           <AiOutlineMenu fontSize={24} fill="#AFB2BF" />
         )}
       </button>
-      <div className="flex w-11/12 max-w-maxContent items-center justify-between">
+      <div className="flex w-11/12 max-w-maxContent items-center justify-between  ">
         <Link href="/">
           <p className="text-2xl font-extrabold leading-8 text-gray-300">
             EduCoder
@@ -109,7 +109,7 @@ const Navbar = () => {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:block">
+        <nav className="hidden md:block  ">
           <ul className="flex gap-x-6 ">
             {NavbarLinks.map((link, index) => (
               <li key={index}>
@@ -175,7 +175,7 @@ const Navbar = () => {
         </nav>
 
         {/* Login / Signup / Dashboard */}
-        <div className="hidden items-center gap-x-3 md:flex">
+        <div className="  items-center gap-x-3  flex mr-4 md:mr-0">
           {user && user.accountType !== ACCOUNT_TYPE.INSTRUCTOR && (
             <Link href="/dashboard/cart" className="relative">
               <AiOutlineShoppingCart className="text-2xl text-gray-300" />
@@ -211,7 +211,7 @@ const Navbar = () => {
       </div>
 
       {/* Mobile Menu */}
-      {/* Mobile Menu */}
+
       <div
         className={`fixed md:hidden top-0 left-0 h-full w-[75%] bg-gray-900 z-50 transform ${
           mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
