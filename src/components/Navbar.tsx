@@ -117,7 +117,6 @@ const Navbar = () => {
             <p className="text-2xl font-extrabold text-gray-200">EduCoder</p>
           </div>
         </Link>
-
         <nav className="hidden md:block  ">
           <ul className="flex gap-x-6 ">
             {NavbarLinks.map((link, index) => (
