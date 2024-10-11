@@ -1,7 +1,7 @@
-import ChangeProfilePicture from "@/components/Dashboard/ChangeProfilePicture";
-import DeleteAccount from "@/components/Dashboard/DeleteAccount";
-import EditProfile from "@/components/Dashboard/EditProfile";
-import UpdatePassword from "@/components/Dashboard/UpdatePassword";
+import ChangeProfilePicture from "@/components/Dashboard/Settings/ChangeProfilePicture";
+import DeleteAccount from "@/components/Dashboard/Settings/DeleteAccount";
+import EditProfile from "@/components/Dashboard/Settings/EditProfile";
+import UpdatePassword from "@/components/Dashboard/Settings/UpdatePassword";
 import React from "react";
 
 const Page = () => {

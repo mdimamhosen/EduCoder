@@ -2,8 +2,9 @@
 import { useEffect, useRef, useState } from "react";
 import { FiUpload } from "react-icons/fi";
 import Image from "next/image";
-import IconBtn from "../common/IconBtn";
+
 import { useSession } from "next-auth/react";
+import IconBtn from "@/components/common/IconBtn";
 
 export default function ChangeProfilePicture() {
   const { data: session } = useSession();

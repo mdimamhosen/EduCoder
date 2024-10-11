@@ -6,7 +6,7 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 // import { useSelector } from "react-redux";
 // import { RootState } from "@/redux/reducer";
 import { useRouter } from "next/navigation";
-import IconBtn from "../common/IconBtn";
+import IconBtn from "@/components/common/IconBtn";
 
 interface PasswordFormInputs {
   oldPassword: string;
