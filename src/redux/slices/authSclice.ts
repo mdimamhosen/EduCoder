@@ -1,7 +1,21 @@
-import { createSlice } from "@reduxjs/toolkit";
-import Cookies from "js-cookie";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-const initialState = {
+// Define the interface for signup details
+interface SignUpDetails {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  accountType?: string;
+}
+
+interface AuthState {
+  signupData: SignUpDetails | null;
+  loading: boolean;
+}
+
+const initialState: AuthState = {
   signupData: null,
   loading: false,
 };
@@ -10,13 +24,15 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setSignupData(state, action) {
+    setSignupData(state, action: PayloadAction<SignUpDetails>) {
       state.signupData = action.payload;
     },
-    setLoading(state, action) {
+    setLoading(state, action: PayloadAction<boolean>) {
       state.loading = action.payload;
     },
   },
 });
+
 export const { setSignupData, setLoading } = authSlice.actions;
+
 export default authSlice.reducer;

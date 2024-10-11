@@ -2,7 +2,7 @@
 import { NavbarLinks } from "@/data/NavbarLinks";
 import { ACCOUNT_TYPE } from "@/utils/roles";
 import Link from "next/link";
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   AiOutlineMenu,
   AiOutlineClose,
@@ -14,6 +14,7 @@ import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import ProfileDropdown from "./Core/ProfileDropdown";
 import { setLoading, setNavOpen, setUser } from "@/redux/slices/profileSlice";
+import { RootState } from "@/redux/reducer";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -22,8 +23,10 @@ const Navbar = () => {
 
   const [catalogOpen, setCatalogOpen] = useState(false);
 
-  const { user, loading, isNavOpen } = useSelector((state) => state.profile);
-  const { totalItems } = useSelector((state) => state.cart);
+  const { user, loading, isNavOpen } = useSelector(
+    (state: RootState) => state.profile
+  );
+  const { totalItems } = useSelector((state: RootState) => state.cart);
   const dispatch = useDispatch();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [subLinks, setSubLinks] = useState([
@@ -114,7 +117,7 @@ const Navbar = () => {
             <div className="flex justify-center items-center bg-gray-200 border border-gray-400 rounded-full h-10 w-10">
               <span className="text-xl font-extrabold text-gray-700  ">EC</span>
             </div>
-            <p className="text-2xl font-extrabold text-gray-200">EduCoder</p>
+            <p className="text-lg font-extrabold text-gray-200">EduCoder</p>
           </div>
         </Link>
         <nav className="hidden md:block  ">

@@ -1,16 +1,20 @@
 "use client";
-import { setLoading, setUser } from "@/redux/slices/profileSlice";
+import { setUser } from "@/redux/slices/profileSlice";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import toast from "react-hot-toast";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { signIn, useSession } from "next-auth/react";
 
 const LoginForm = () => {
+  const router = useRouter();
   const { data: session } = useSession();
   const token = session?.user;
+  if (token) {
+    router.replace("/");
+  }
 
   const [formData, setFormData] = useState({
     email: "",
@@ -18,7 +22,7 @@ const LoginForm = () => {
   });
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
-  const router = useRouter();
+
   const [showPassword, setShowPassword] = useState(false);
 
   const { email, password } = formData;

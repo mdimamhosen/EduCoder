@@ -1,6 +1,21 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-const initialState = {
+export interface SignUpDetails {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  accountType?: string;
+}
+
+interface ProfileState {
+  user: SignUpDetails | null;
+  loading: boolean;
+  isNavOpen: boolean;
+}
+
+const initialState: ProfileState = {
   user: null,
   loading: false,
   isNavOpen: false,
@@ -10,14 +25,14 @@ const profileSlice = createSlice({
   name: "profile",
   initialState,
   reducers: {
-    setUser(state, action) {
+    setUser(state, action: PayloadAction<SignUpDetails | null>) {
       state.user = action.payload;
     },
-    setLoading(state, value) {
-      state.loading = value.payload;
+    setLoading(state, action: PayloadAction<boolean>) {
+      state.loading = action.payload;
     },
-    setNavOpen(state, value) {
-      state.isNavOpen = value.payload;
+    setNavOpen(state, action: PayloadAction<boolean>) {
+      state.isNavOpen = action.payload;
     },
   },
 });
