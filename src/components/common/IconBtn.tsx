@@ -8,7 +8,7 @@ export default function IconBtn({
   type,
 }: {
   text: string;
-  onclick: () => void;
+  onclick?: () => void;
   children?: React.ReactNode;
   disabled?: boolean;
   outline?: boolean;
