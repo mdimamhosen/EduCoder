@@ -1,56 +1,82 @@
-import React, { useState } from "react";
+// Importing React hook for managing component state
+import { useEffect, useState } from "react";
+// Importing React icon component
 import { MdClose } from "react-icons/md";
+import { useSelector } from "react-redux";
 
-interface ChipInputProps {
-  label: string;
-  name: string;
-  placeholder: string;
-  tags: string[];
-  errors: { [key: string]: string | undefined };
-  onChange: (value: string[]) => void;
-}
-
+// Defining a functional component ChipInput
 export default function ChipInput({
+  // Props to be passed to the component
   label,
   name,
   placeholder,
-  tags,
+  register,
   errors,
-  onChange,
-}: ChipInputProps) {
-  const [chips, setChips] = useState<string[]>(tags || []);
+  setValue,
+  getValues,
+}) {
+  const { editCourse, course } = useSelector((state) => state.course);
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  // Setting up state for managing chips array
+  const [chips, setChips] = useState([]);
+
+  useEffect(() => {
+    if (editCourse) {
+      // console.log(course)
+      setChips(course?.tag);
+    }
+    register(name, { required: true, validate: (value) => value.length > 0 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    setValue(name, chips);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chips]);
+
+  // Function to handle user input when chips are added
+  const handleKeyDown = (event) => {
+    // Check if user presses "Enter" or ","
     if (event.key === "Enter" || event.key === ",") {
+      // Prevent the default behavior of the event
       event.preventDefault();
-      const chipValue = event.currentTarget.value.trim();
+      // Get the input value and remove any leading/trailing spaces
+      const chipValue = event.target.value.trim();
+      // Check if the input value exists and is not already in the chips array
       if (chipValue && !chips.includes(chipValue)) {
+        // Add the chip to the array and clear the input
         const newChips = [...chips, chipValue];
         setChips(newChips);
-        onChange(newChips); // Update parent component
-        event.currentTarget.value = "";
+        event.target.value = "";
       }
     }
   };
 
-  const handleDeleteChip = (chipIndex: number) => {
+  // Function to handle deletion of a chip
+  const handleDeleteChip = (chipIndex) => {
+    // Filter the chips array to remove the chip with the given index
     const newChips = chips.filter((_, index) => index !== chipIndex);
     setChips(newChips);
-    onChange(newChips); // Update parent component
   };
 
+  // Render the component
   return (
     <div className="flex flex-col space-y-2">
-      <label className="text-sm label-style" htmlFor={name}>
+      {/* Render the label for the input */}
+      <label className="text-sm text-richblack-5" htmlFor={name}>
         {label} <sup className="text-pink-200">*</sup>
       </label>
+      {/* Render the chips and input */}
       <div className="flex w-full flex-wrap gap-y-2">
+        {/* Map over the chips array and render each chip */}
         {chips.map((chip, index) => (
           <div
             key={index}
-            className="m-1 flex items-center rounded-full bg-yellow-400 px-2 py-1 text-sm text-gray-900"
+            className="m-1 flex items-center rounded-full bg-yellow-400 px-2 py-1 text-sm text-richblack-5"
           >
+            {/* Render the chip value */}
             {chip}
+            {/* Render the button to delete the chip */}
             <button
               type="button"
               className="ml-2 focus:outline-none"
@@ -60,6 +86,7 @@ export default function ChipInput({
             </button>
           </div>
         ))}
+        {/* Render the input for adding new chips */}
         <input
           id={name}
           name={name}
@@ -69,9 +96,10 @@ export default function ChipInput({
           className="form-style w-full"
         />
       </div>
+      {/* Render an error message if the input is required and not filled */}
       {errors[name] && (
         <span className="ml-2 text-xs tracking-wide text-pink-200">
-          {errors[name]}
+          {label} is required
         </span>
       )}
     </div>
