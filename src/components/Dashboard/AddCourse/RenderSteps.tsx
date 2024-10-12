@@ -3,6 +3,7 @@ import { RootState } from "@/redux/reducer";
 import { FaCheck } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import CourseInformationForm from "./CourseInformationForm";
+import CourseBuilderForm from "./CourseBuilderForm";
 
 export default function RenderSteps() {
   const { step } = useSelector((state: RootState) => state.course);
@@ -33,7 +34,7 @@ export default function RenderSteps() {
                   step === item.id
                     ? "border-gray-400 bg-gray-700 text-gray-300"
                     : "border-gray-600 bg-gray-800 text-gray-300"
-                } ${step > item.id && "bg-yellow-50 text-yellow-50"}} `}
+                } ${step > item.id && "bg-yellow-400 text-gray-900"}} `}
               >
                 {step > item.id ? (
                   <FaCheck className="font-bold text-gray-400" />
@@ -76,8 +77,8 @@ export default function RenderSteps() {
       </div>
       {/* Render specific component based on current step */}
       {step === 1 && <CourseInformationForm />}
-      {/*   {step === 2 && <CourseBuilderForm />}
-      {step === 3 &&  <PublishCourse /> } */}
+      {step === 2 && <CourseBuilderForm />}
+      {/*  {step === 3 &&  <PublishCourse /> } */}
     </>
   );
 }

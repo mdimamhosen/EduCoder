@@ -10,7 +10,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/reducer";
 import toast from "react-hot-toast";
 import RequirementsField from "./RequirementField";
-import { setStep } from "@/redux/slices/courseSlice";
+import { setCourse, setStep } from "@/redux/slices/courseSlice";
+import axios from "axios";
+
+export interface Category {
+  _id: string;
+  name: string;
+  description?: string;
+}
+
 interface CourseFormData {
   courseTitle: string;
   courseShortDesc: string;
@@ -20,6 +28,18 @@ interface CourseFormData {
   courseCategory: string;
   courseRequirements: string[];
   courseImage: File | string;
+}
+export interface Course {
+  _id?: string;
+  courseName: string;
+  courseDescription: string;
+  whatYouWillLearn: string;
+  price: number;
+  thumbnail: string;
+  tag: string[];
+  instructions: string[];
+  status: "Draft" | "Published";
+  category: Category;
 }
 
 export default function CourseInformationForm() {
@@ -32,43 +52,46 @@ export default function CourseInformationForm() {
   } = useForm<CourseFormData>();
 
   const dispatch = useDispatch();
-  // const { token } = useSelector((state: ) => state.auth)
+
   const { course, editCourse } = useSelector(
     (state: RootState) => state.course
   );
   const [loading, setLoading] = useState(false);
-  const [courseCategories, setCourseCategories] = useState([
-    {
-      _id: "",
-      name: "",
-    },
-  ]);
+  const [courseCategories, setCourseCategories] = useState<Category[]>([]);
 
   useEffect(() => {
-    // I will write this function later on.
-    // const getCategories = async () => {
-    //   setLoading(true)
-    //   const categories = await fetchCourseCategories()
-    //   if (categories.length > 0) {
-    //     // console.log("categories", categories)
-    //     setCourseCategories(categories)
-    //   }
-    //   setLoading(false)
-    // }
+    setLoading(true);
+    const getCategories = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get("/api/create-getAll-category");
+        console.log("Categories Response: ", response.data.data);
+        if (response.data.data.length > 0) {
+          setCourseCategories(response.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    // if form is in edit mode
+    getCategories();
+  }, []);
+
+  useEffect(() => {
+    setLoading(true);
     if (editCourse) {
-      // console.log("data populated", editCourse)
       setValue("courseTitle", course.courseName);
       setValue("courseShortDesc", course.courseDescription);
       setValue("coursePrice", course.price);
       setValue("courseTags", course.tag);
       setValue("courseBenefits", course.whatYouWillLearn);
-      setValue("courseCategory", course.category);
+      setValue("courseCategory", course.category[0]._id);
       setValue("courseRequirements", course.instructions);
       setValue("courseImage", course.thumbnail);
     }
-    // getCategories()
+    setLoading(false);
   }, [
     course.category,
     course.courseDescription,
@@ -91,7 +114,6 @@ export default function CourseInformationForm() {
       currentValues.coursePrice !== course.price ||
       currentValues.courseTags.toString() !== course.tag.toString() ||
       currentValues.courseBenefits !== course.whatYouWillLearn ||
-      currentValues.courseCategory._id !== course.category._id ||
       currentValues.courseRequirements.toString() !==
         course.instructions.toString() ||
       currentValues.courseImage !== course.thumbnail
@@ -102,8 +124,8 @@ export default function CourseInformationForm() {
   };
 
   //   handle next button click
-  const onSubmit = async (data) => {
-    // console.log(data)
+  const onSubmit = async (data: CourseFormData) => {
+    console.log("data", data);
 
     if (editCourse) {
       // const currentValues = getValues()
@@ -122,16 +144,13 @@ export default function CourseInformationForm() {
           formData.append("courseDescription", data.courseShortDesc);
         }
         if (currentValues.coursePrice !== course.price) {
-          formData.append("price", data.coursePrice);
+          formData.append("price", data.coursePrice.toString());
         }
         if (currentValues.courseTags.toString() !== course.tag.toString()) {
           formData.append("tag", JSON.stringify(data.courseTags));
         }
         if (currentValues.courseBenefits !== course.whatYouWillLearn) {
           formData.append("whatYouWillLearn", data.courseBenefits);
-        }
-        if (currentValues.courseCategory._id !== course.category._id) {
-          formData.append("category", data.courseCategory);
         }
         if (
           currentValues.courseRequirements.toString() !==
@@ -150,42 +169,45 @@ export default function CourseInformationForm() {
         // const result = await editCourseDetails(formData, token)
         setLoading(false);
         // if (result) {
-        //   dispatch(setStep(2))
-        //   dispatch(setCourse(result))
+        // dispatch(setStep(2));
+        // dispatch(setCourse(result))
+        // dispatch(setCourse(result));
+
         // }
       } else {
         toast.error("No changes made to the form");
       }
       return;
     }
-
+    setLoading(true);
     const formData = new FormData();
     formData.append("courseName", data.courseTitle);
     formData.append("courseDescription", data.courseShortDesc);
-    formData.append("price", data.coursePrice);
+    formData.append("price", data.coursePrice.toString());
     formData.append("tag", JSON.stringify(data.courseTags));
     formData.append("whatYouWillLearn", data.courseBenefits);
     formData.append("category", data.courseCategory);
     formData.append("status", COURSE_STATUS.DRAFT);
     formData.append("instructions", JSON.stringify(data.courseRequirements));
     formData.append("thumbnailImage", data.courseImage);
-    setLoading(true);
+
     // const result = await addCourseDetails(formData, token)
     // if (result) {
-    //   dispatch(setStep(2))
-    //   dispatch(setCourse(result))
+    dispatch(setStep(2));
+    dispatch(setCourse(formData));
     // }
+    console.log("Form Data: ", formData);
     setLoading(false);
   };
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="space-y-8 rounded-md border-[1px] border-richblack-700 bg-richblack-800 p-6"
+      className="space-y-8 rounded-md border-[1px] border-gray-600 bg-gray-800 p-6"
     >
       {/* Course Title */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-richblack-5" htmlFor="courseTitle">
+        <label className="text-sm lable-style" htmlFor="courseTitle">
           Course Title <sup className="text-pink-200">*</sup>
         </label>
         <input
@@ -202,7 +224,7 @@ export default function CourseInformationForm() {
       </div>
       {/* Course Short Description */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-richblack-5" htmlFor="courseShortDesc">
+        <label className="text-sm lable-style" htmlFor="courseShortDesc">
           Course Short Description <sup className="text-pink-200">*</sup>
         </label>
         <textarea
@@ -219,18 +241,19 @@ export default function CourseInformationForm() {
       </div>
       {/* Course Price */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-richblack-5" htmlFor="coursePrice">
+        <label className="text-sm lable-style" htmlFor="coursePrice">
           Course Price <sup className="text-pink-200">*</sup>
         </label>
         <div className="relative">
           <input
             id="coursePrice"
             placeholder="Enter Course Price"
+            type="number"
             {...register("coursePrice", {
-              required: true,
+              required: "Price is required",
               valueAsNumber: true,
-              pattern: {
-                value: /^(0|[1-9]\d*)(\.\d+)?$/,
+              validate: (value) => {
+                return value > 0 || "Price must be a positive number";
               },
             })}
             className="form-style w-full !pl-12"
@@ -245,7 +268,7 @@ export default function CourseInformationForm() {
       </div>
       {/* Course Category */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-richblack-5" htmlFor="courseCategory">
+        <label className="text-sm lable-style" htmlFor="courseCategory">
           Course Category <sup className="text-pink-200">*</sup>
         </label>
         <select
@@ -260,10 +283,12 @@ export default function CourseInformationForm() {
           {!loading &&
             courseCategories?.map((category, indx) => (
               <option key={indx} value={category?._id}>
+                {" "}
                 {category?.name}
               </option>
             ))}
         </select>
+
         {errors.courseCategory && (
           <span className="ml-2 text-xs tracking-wide text-pink-200">
             Course Category is required
@@ -291,7 +316,7 @@ export default function CourseInformationForm() {
       />
       {/* Benefits of the course */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-richblack-5" htmlFor="courseBenefits">
+        <label className="text-sm lable-style" htmlFor="courseBenefits">
           Benefits of the course <sup className="text-pink-200">*</sup>
         </label>
         <textarea
@@ -321,16 +346,18 @@ export default function CourseInformationForm() {
           <button
             onClick={() => dispatch(setStep(2))}
             disabled={loading}
-            className={`flex cursor-pointer items-center gap-x-2 rounded-md bg-richblack-300 py-[8px] px-[20px] font-semibold text-richblack-900`}
+            className={`flex cursor-pointer items-center gap-x-2 rounded-md bg-gray-600 py-[8px] px-[20px] font-semibold text-gray-200`}
           >
             Continue Without Saving
           </button>
         )}
+
         <IconBtn
-          disabled={loading}
+          type="submit"
+          // disabled={loading}
           text={!editCourse ? "Next" : "Save Changes"}
         >
-          <MdNavigateNext />
+          <MdNavigateNext /> {loading ? "Loading..." : ""}
         </IconBtn>
       </div>
     </form>

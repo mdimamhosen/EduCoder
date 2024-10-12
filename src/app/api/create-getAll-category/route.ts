@@ -56,7 +56,11 @@ export async function POST(req: Request) {
 export async function GET() {
   await DatabaseConnection();
   try {
-    const categories = await Category.find({});
+    const categories = await Category.find(
+      {},
+      { _id: 1, name: 1, description: 1 }
+    );
+    console.log(categories);
     return NextResponse.json(
       {
         success: true,

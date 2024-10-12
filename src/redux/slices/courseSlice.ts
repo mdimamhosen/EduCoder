@@ -1,10 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export interface CourseCategory {
+export interface Category {
   _id: string;
   name: string;
+  description: string;
 }
-
 // Define the interface for the course object
 export interface Course {
   _id?: string;
@@ -16,7 +16,7 @@ export interface Course {
   tag: string[];
   instructions: string[];
   status: "Draft" | "Published";
-  category: CourseCategory;
+  category: Category[];
 }
 export enum COURSE_STATUS {
   DRAFT = "DRAFT",
@@ -35,10 +35,13 @@ const initialState = {
     tag: [],
     instructions: [],
     status: "Draft",
-    category: {
-      _id: "", // Initialize with an empty string for _id
-      name: "",
-    },
+    category: [
+      {
+        _id: "",
+        name: "",
+        description: "",
+      },
+    ],
   } as Course,
   editCourse: false,
   paymentLoading: false,
@@ -72,10 +75,13 @@ const courseSlice = createSlice({
         tag: [],
         instructions: [],
         status: "Draft",
-        category: {
-          _id: "", // Reset _id to empty string
-          name: "",
-        },
+        category: [
+          {
+            _id: "",
+            name: "",
+            description: "",
+          },
+        ],
       };
       state.editCourse = false;
     },
