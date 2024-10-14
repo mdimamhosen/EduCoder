@@ -1,11 +1,15 @@
 import mongoose from "mongoose";
+import User from "./User";
+import Section from "./Section";
+import RatingAndReview from "./RatingAndReview";
+import { Category } from "./Category";
 
-const coursesSchema = new mongoose.Schema({
+const CSchema = new mongoose.Schema({
   courseName: { type: String },
   courseDescription: { type: String },
   instructor: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "user",
+    ref: "User",
   },
   whatYouWillLearn: {
     type: String,
@@ -13,7 +17,7 @@ const coursesSchema = new mongoose.Schema({
   courseContent: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Section",
+      ref: Section,
     },
   ],
   ratingAndReviews: [
@@ -33,13 +37,12 @@ const coursesSchema = new mongoose.Schema({
   },
   category: {
     type: mongoose.Schema.Types.ObjectId,
-    // required: true,
     ref: "Category",
   },
   studentsEnrolled: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "user",
+      ref: "User",
     },
   ],
   instructions: {
@@ -55,5 +58,5 @@ const coursesSchema = new mongoose.Schema({
   },
 });
 
-export const Course =
-  mongoose.models.Course || mongoose.model("Course", coursesSchema);
+const Course = mongoose.models.Course || mongoose.model("Course", CSchema);
+export default Course;

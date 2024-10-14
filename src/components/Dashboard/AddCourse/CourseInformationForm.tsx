@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 import RequirementsField from "./RequirementField";
 import { setCourse, setStep } from "@/redux/slices/courseSlice";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 
 export interface Category {
   _id: string;
@@ -43,6 +44,8 @@ export interface Course {
 }
 
 export default function CourseInformationForm() {
+  const { data: session, status } = useSession();
+  const userId = session?.user?._id;
   const {
     register,
     handleSubmit,
@@ -125,79 +128,54 @@ export default function CourseInformationForm() {
 
   //   handle next button click
   const onSubmit = async (data: CourseFormData) => {
-    console.log("data", data);
-
-    if (editCourse) {
-      // const currentValues = getValues()
-      // console.log("changes after editing form values:", currentValues)
-      // console.log("now course:", course)
-      // console.log("Has Form Changed:", isFormUpdated())
-      if (isFormUpdated()) {
-        const currentValues = getValues();
-        const formData = new FormData();
-        // console.log(data)
-        formData.append("courseId", course._id ?? "");
-        if (currentValues.courseTitle !== course.courseName) {
-          formData.append("courseName", data.courseTitle);
-        }
-        if (currentValues.courseShortDesc !== course.courseDescription) {
-          formData.append("courseDescription", data.courseShortDesc);
-        }
-        if (currentValues.coursePrice !== course.price) {
-          formData.append("price", data.coursePrice.toString());
-        }
-        if (currentValues.courseTags.toString() !== course.tag.toString()) {
-          formData.append("tag", JSON.stringify(data.courseTags));
-        }
-        if (currentValues.courseBenefits !== course.whatYouWillLearn) {
-          formData.append("whatYouWillLearn", data.courseBenefits);
-        }
-        if (
-          currentValues.courseRequirements.toString() !==
-          course.instructions.toString()
-        ) {
-          formData.append(
-            "instructions",
-            JSON.stringify(data.courseRequirements)
-          );
-        }
-        if (currentValues.courseImage !== course.thumbnail) {
-          formData.append("thumbnailImage", data.courseImage);
-        }
-        // console.log("Edit Form data: ", formData)
-        setLoading(true);
-        // const result = await editCourseDetails(formData, token)
-        setLoading(false);
-        // if (result) {
-        // dispatch(setStep(2));
-        // dispatch(setCourse(result))
-        // dispatch(setCourse(result));
-
-        // }
-      } else {
-        toast.error("No changes made to the form");
-      }
-      return;
-    }
-    setLoading(true);
     const formData = new FormData();
-    formData.append("courseName", data.courseTitle);
-    formData.append("courseDescription", data.courseShortDesc);
-    formData.append("price", data.coursePrice.toString());
-    formData.append("tag", JSON.stringify(data.courseTags));
-    formData.append("whatYouWillLearn", data.courseBenefits);
-    formData.append("category", data.courseCategory);
-    formData.append("status", COURSE_STATUS.DRAFT);
-    formData.append("instructions", JSON.stringify(data.courseRequirements));
-    formData.append("thumbnailImage", data.courseImage);
 
-    // const result = await addCourseDetails(formData, token)
-    // if (result) {
-    dispatch(setStep(2));
-    dispatch(setCourse(formData));
-    // }
-    console.log("Form Data: ", formData);
-    setLoading(false);
+    // Helper function to build FormData for course creation
+    const buildFormData = () => {
+      formData.append("userId", userId);
+      formData.append("courseName", data.courseTitle);
+      formData.append("courseDescription", data.courseShortDesc);
+      formData.append("price", data.coursePrice.toString());
+      formData.append("tag", JSON.stringify(data.courseTags));
+      formData.append("whatYouWillLearn", data.courseBenefits);
+      formData.append("category", data.courseCategory);
+      formData.append("status", COURSE_STATUS.DRAFT);
+      formData.append("instructions", JSON.stringify(data.courseRequirements));
+      formData.append("thumbnailImage", data.courseImage);
+    };
+
+    try {
+      setLoading(true);
+
+      if (editCourse) {
+        if (isFormUpdated()) {
+          buildFormData(); // Call helper function for building data
+          formData.append("courseId", course._id ?? "");
+        } else {
+          toast.error("No changes made to the form");
+          return;
+        }
+      } else {
+        buildFormData(); // Call helper function for new course
+      }
+
+      const result = await axios.post(
+        "/api/create-getAll-deleteA-course",
+        formData
+      );
+      console.log("result", result);
+      if (result?.status === 200) {
+        dispatch(setCourse(result.data.data));
+        console.log("course data:", course);
+        dispatch(setStep(2));
+        toast.success("Course Information Saved Successfully");
+      }
+    } catch (error) {
+      console.error("Error creating course:", error);
+      toast.error("An error occurred while creating the course");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -352,13 +330,19 @@ export default function CourseInformationForm() {
           </button>
         )}
 
-        <IconBtn
+        <button
+          disabled={loading}
           type="submit"
-          // disabled={loading}
-          text={!editCourse ? "Next" : "Save Changes"}
+          className={`flex items-center bg-yellow-400 cursor-pointer gap-x-2 rounded-md py-2 px-5 font-semibold text-gray-900 hover:shadow-none hover:scale-95 transition-all duration-300   ease-linear`}
         >
-          <MdNavigateNext /> {loading ? "Loading..." : ""}
-        </IconBtn>
+          {loading ? (
+            "Loading..."
+          ) : (
+            <>
+              <span>Next</span> <MdNavigateNext />
+            </>
+          )}
+        </button>
       </div>
     </form>
   );

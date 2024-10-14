@@ -7,5 +7,6 @@ const SubSectionSchema = new mongoose.Schema({
   videoUrl: { type: String },
 });
 
-export const SubSection =
+const SubSection =
   mongoose.models.SubSection || mongoose.model("SubSection", SubSectionSchema);
+export default SubSection;

@@ -14,7 +14,7 @@
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.5.1",
     "js-cookie": "^3.0.5",
-    "mongoose": "^8.7.0",
+    "mongoose": "^8.7.1",
     "next": "^14.2.14",
     "next-auth": "^4.24.8",
     "next-cloudinary": "^6.14.1",
@@ -45,5 +45,10 @@
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.13",
     "typescript": "^5.6.2"
-  }
+  },
+  "description": "��#\u0000 \u0000E\u0000d\u0000u\u0000C\u0000o\u0000d\u0000e\u0000r\u0000\r\u0000 \u0000",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

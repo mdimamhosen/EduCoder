@@ -69,7 +69,6 @@ const Navbar = () => {
       dispatch(setNavOpen(false));
     }
   }, [mobileMenuOpen, dispatch]);
-  console.log("isNavOpen in navbar", isNavOpen);
 
   const closeMobileMenu = () => {
     setMobileMenuOpen(false);

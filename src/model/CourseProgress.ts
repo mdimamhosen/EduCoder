@@ -1,22 +1,27 @@
 import mongoose from "mongoose";
+import Course from "./Course";
+import User from "./User";
+import SubSection from "./SubSection";
 
-const courseProgress = new mongoose.Schema({
+const courseProgressSchema = new mongoose.Schema({
   courseID: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Course",
+    ref: Course,
   },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "user",
+    ref: "User",
   },
   completedVideos: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "SubSection",
+      ref: SubSection,
     },
   ],
 });
 
-export const CourseProgress =
+const CourseProgress =
   mongoose.models.CourseProgress ||
-  mongoose.model("CourseProgress", courseProgress);
+  mongoose.model("CourseProgress", courseProgressSchema);
+
+export default CourseProgress;

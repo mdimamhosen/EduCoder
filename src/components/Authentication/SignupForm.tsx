@@ -55,15 +55,6 @@ const SignupForm = () => {
     } else if (e.target.name === "password" && e.target.value.length >= 8) {
       setPassAlert("");
     }
-
-    // Validate confirmPassword when both fields are filled
-    if (e.target.name === "confirmPassword" || e.target.name === "password") {
-      if (password && confirmPassword && password !== confirmPassword) {
-        setPassAlert("Passwords do not match");
-      } else {
-        setPassAlert("");
-      }
-    }
   };
 
   // Handle form submission
@@ -78,7 +69,7 @@ const SignupForm = () => {
 
     // Check if passwords match
     if (password !== confirmPassword) {
-      toast.error("Passwords do not match");
+      setPassAlert("Passwords do not match");
       return;
     }
 
@@ -239,7 +230,7 @@ const SignupForm = () => {
         <button
           type="submit"
           disabled={loading}
-          className={`mt-6 rounded-[8px] bg-yellow-400 py-[8px] px-[12px] font-medium text-richblack-900 ${
+          className={`mt-6 rounded-[8px] bg-yellow-400 py-[8px] px-[12px] font-medium text-gray-900 ${
             loading && "opacity-50"
           }`}
         >
@@ -247,9 +238,9 @@ const SignupForm = () => {
         </button>
       </form>
       <div className="flex items-center my-4 gap-x-2 justify-center">
-        <p className="text-richblack-5">Already have an account?</p>
+        <p className="text-gray-300">Already have an account?</p>
         <Link href="/login">
-          <p className="text-yellow-25">Login</p>
+          <p className="text-yellow-400">Login</p>
         </Link>
       </div>
     </div>

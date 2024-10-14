@@ -60,7 +60,7 @@ export async function GET() {
       {},
       { _id: 1, name: 1, description: 1 }
     );
-    console.log(categories);
+
     return NextResponse.json(
       {
         success: true,

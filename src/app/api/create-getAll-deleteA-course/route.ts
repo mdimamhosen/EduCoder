@@ -1,6 +1,6 @@
 import DatabaseConnection from "@/lib/DBconnect";
 import { Category } from "@/model/Category";
-import { Course } from "@/model/Course";
+import Course from "@/model/Course";
 import User from "@/model/User";
 import { UploadFile } from "@/utils/Uploader";
 import { NextResponse } from "next/server";
@@ -40,18 +40,18 @@ export async function POST(req: Request) {
       );
     }
 
-    console.log({
-      userId,
-      courseName,
-      courseDescription,
-      whatYouWillLearn,
-      price,
-      tag,
-      category,
-      status,
-      instructions,
-      thumbnail,
-    });
+    // console.log({
+    //   userId: userId,
+    //   courseName: courseName,
+    //   courseDescription: courseDescription,
+    //   whatYouWillLearn: whatYouWillLearn,
+    //   price: price,
+    //   tag: tag,
+    //   category: category,
+    //   status: status,
+    //   instructions: instructions,
+    //   thumbnail: thumbnail,
+    // });
 
     const instructorDetails = await User.findById(userId, {
       accountType: "Instructor",
@@ -122,7 +122,7 @@ export async function POST(req: Request) {
         message: "Course created successfully",
         data: newCourse,
       },
-      { status: 201 }
+      { status: 200 }
     );
   } catch (error) {
     console.log(error);

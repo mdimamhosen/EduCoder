@@ -1,4 +1,7 @@
 import mongoose from "mongoose";
+import Profile from "./Profile";
+import Course from "./Course";
+import CourseProgress from "./CourseProgress";
 
 const userSchema = new mongoose.Schema(
   {
@@ -37,12 +40,12 @@ const userSchema = new mongoose.Schema(
     },
     additionalDetails: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "profileSchema",
+      ref: Profile,
     },
     courses: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "coursesSchema",
+        ref: Course,
       },
     ],
     token: {
@@ -57,7 +60,7 @@ const userSchema = new mongoose.Schema(
     courseProgress: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "courseProgress",
+        ref: CourseProgress,
       },
     ],
   },

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import Course from "./Course";
 
 const categorySchema = new mongoose.Schema({
   name: {
@@ -8,7 +9,7 @@ const categorySchema = new mongoose.Schema({
   courses: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Course",
+      ref: Course,
     },
   ],
 });

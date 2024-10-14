@@ -8,7 +8,7 @@ export default function IconBtn({
   type,
 }: {
   text: string;
-  onclick?: () => void;
+  onclick?: any;
   children?: React.ReactNode;
   disabled?: boolean;
   outline?: boolean;
@@ -20,8 +20,10 @@ export default function IconBtn({
       disabled={disabled}
       onClick={onclick}
       className={`flex items-center ${
-        outline ? "border border-yellow-400 bg-transparent" : "bg-yellow-400"
-      } cursor-pointer gap-x-2 rounded-md py-2 px-5 font-semibold text-gray-900 hover:shadow-none hover:scale-95 transition-all duration-300 ${customClasses}`}
+        outline
+          ? "border border-yellow-400   ${customClasses}"
+          : "bg-yellow-400"
+      } cursor-pointer gap-x-2 rounded-md py-2 px-5 font-semibold text-gray-900 hover:shadow-none hover:scale-95 transition-all duration-300 ${customClasses} ease-linear`}
       type={type}
     >
       {children ? (

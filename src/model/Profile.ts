@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const profileSchema = new mongoose.Schema({
+const PSchema = new mongoose.Schema({
   gender: {
     type: String,
   },
@@ -17,6 +17,5 @@ const profileSchema = new mongoose.Schema({
   },
 });
 
-const Profile =
-  mongoose.models.Profile || mongoose.model("Profile", profileSchema);
+const Profile = mongoose.models.Profile || mongoose.model("Profile", PSchema);
 export default Profile;

@@ -1,9 +1,9 @@
 import { OTP } from "@/model/OTP";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-
-import User from "@/model/User";
 import Profile from "@/model/Profile";
+import User from "@/model/User";
+
 export async function POST(request: Request) {
   try {
     const {
