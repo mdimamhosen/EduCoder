@@ -5,10 +5,12 @@ import Image from "next/image";
 
 import { useSession } from "next-auth/react";
 import IconBtn from "@/components/common/IconBtn";
+import axios from "axios";
+import toast from "react-hot-toast";
 
-export default function ChangeProfilePicture() {
-  const { data: session } = useSession();
-  const user = session?.user;
+export default function ChangeProfilePicture({ user }: { user: any }) {
+  const { status } = useSession(); // Get session status
+
   const [loading, setLoading] = useState<boolean>(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [previewSource, setPreviewSource] = useState<string | null>(null);
@@ -37,21 +39,27 @@ export default function ChangeProfilePicture() {
   };
 
   // Handle file upload logic
-  //(you'll need to implement the upload logic, such as using Cloudinary or a custom backend)
   const handleFileUpload = async () => {
     if (!imageFile) return;
 
     setLoading(true);
     try {
-      // Add your file upload logic here
-      console.log("Uploading file:", imageFile);
+      console.log("user", user);
+      const formData = new FormData();
+      formData.append("image", imageFile);
 
-      // Simulate file upload delay (replace this with actual API call)
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      formData.append("userId", user.data._id);
+
+      const resonse = await axios.put("/api/update-profile-image", formData);
+      if (resonse.data.success) {
+        console.log("File uploaded successfully!");
+        toast.success("Profile picture updated successfully");
+      }
 
       console.log("File uploaded successfully!");
     } catch (error) {
       console.error("File upload failed:", error);
+      toast.error("Failed to update profile picture");
     } finally {
       setLoading(false);
     }
@@ -69,7 +77,13 @@ export default function ChangeProfilePicture() {
         <Image
           width={78}
           height={78}
-          src={previewSource || user?.image || ""}
+          src={
+            loading || status === "loading"
+              ? "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"
+              : previewSource ||
+                user?.data.image ||
+                "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"
+          }
           alt={`profile-${user?.firstName}`}
           className="aspect-square w-[78px] rounded-full object-cover"
         />
@@ -77,7 +91,7 @@ export default function ChangeProfilePicture() {
           <p className="text-gray-200 text-lg md:text-xl lg:text-2xl">
             Change Profile Picture
           </p>
-          <div className="flex  flex-row justify-center md:justify-start gap-3">
+          <div className="flex flex-row justify-center md:justify-start gap-3">
             <input
               type="file"
               ref={fileInputRef}

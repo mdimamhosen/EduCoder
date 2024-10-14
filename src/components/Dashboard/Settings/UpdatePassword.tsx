@@ -7,13 +7,15 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 // import { RootState } from "@/redux/reducer";
 import { useRouter } from "next/navigation";
 import IconBtn from "@/components/common/IconBtn";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 interface PasswordFormInputs {
   oldPassword: string;
   newPassword: string;
 }
 
-const UpdatePassword = () => {
+const UpdatePassword = ({ user }: { user: any }) => {
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const router = useRouter();
@@ -33,8 +35,25 @@ const UpdatePassword = () => {
   const submitPasswordForm = async (data: PasswordFormInputs) => {
     try {
       // Here you can add logic to update the password (e.g., an API call)
+      const formData = new FormData();
+      formData.append("oldPassword", data.oldPassword);
+      formData.append("newPassword", data.newPassword);
+      formData.append("userId", user.data._id);
+
       console.log("Password Data:", data);
-      // Example: await updatePasswordAPI(data.oldPassword, data.newPassword, token);
+
+      const response = await axios.put(
+        `/api/update-password-profile`,
+        formData
+      );
+      console.log("Response:", response.data);
+      if (response.data.success) {
+        console.log("Password Updated Successfully");
+        toast.success(response.data.message);
+      } else {
+        console.log("Error Updating Password");
+        toast.error(response.data.message);
+      }
     } catch (error) {
       if (error instanceof Error) {
         // If the error is an instance of Error, we can safely access its message
@@ -43,6 +62,7 @@ const UpdatePassword = () => {
         // If it's some other type of error, handle it appropriately
         console.error("An unknown error occurred.");
       }
+      toast.error("Error Updating Password");
     }
   };
 

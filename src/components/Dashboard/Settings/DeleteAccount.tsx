@@ -1,16 +1,31 @@
 "use client";
+import axios from "axios";
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 import { FiArrowRight, FiTrash2 } from "react-icons/fi";
 
-const DeleteAccount = () => {
+const DeleteAccount = ({ user }: { user: any }) => {
   const [showModal, setShowModal] = useState(false);
+  const router = useRouter();
 
   // Handle account deletion logic here
   async function handleDeleteAccount() {
     try {
-      // Example: await deleteAccountAPI();
       console.log("Account Deleted Successfully");
-      setShowModal(false); // Close modal after successful deletion
+      console.log(user.data._id);
+      const userId = user.data._id;
+      const response = await axios.delete(`/api/user`, { data: { userId } });
+      if (response.data.success) {
+        console.log("Account Deleted Successfully");
+
+        toast.success("Account Deleted Successfully");
+
+        await signOut({ callbackUrl: "/" });
+        router.push(`/`);
+        setShowModal(false);
+      }
     } catch (error) {
       if (error instanceof Error) {
         console.error("ERROR MESSAGE - ", error.message);

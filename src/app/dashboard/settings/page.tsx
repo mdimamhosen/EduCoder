@@ -32,10 +32,10 @@ const Page = () => {
       <h1 className="my-7 text-xl lg:text-3xl font-medium text-gray-300">
         Edit Profile
       </h1>
-      <ChangeProfilePicture />
-      <EditProfile />
-      <UpdatePassword />
-      <DeleteAccount />
+      <ChangeProfilePicture user={user} />
+      <EditProfile user={user} />
+      <UpdatePassword user={user} />
+      <DeleteAccount user={user} />
     </>
   );
 };

@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import IconBtn from "@/components/common/IconBtn";
+import toast from "react-hot-toast";
+import axios from "axios";
 
 // Define the shape of the form data
 interface FormData {
@@ -19,10 +21,10 @@ interface FormData {
 // Available gender options
 const genders = ["Male", "Female", "Non-Binary", "Prefer not to say", "Other"];
 
-const EditProfile: React.FC = () => {
+const EditProfile = ({ user }: { user: any }) => {
   const router = useRouter();
-  const { data: session } = useSession();
-  const user = session?.user;
+  const { data: session, status } = useSession();
+  // const user = session?.user;
 
   const {
     register,
@@ -32,8 +34,25 @@ const EditProfile: React.FC = () => {
 
   const submitProfileForm: SubmitHandler<FormData> = async (data) => {
     try {
-      // Handle form submission (e.g., API call to update the profile)
+      // Update the user profile
+      const formData = new FormData();
+      formData.append("firstName", data.firstName);
+      formData.append("lastName", data.lastName);
+      formData.append("dateOfBirth", data.dateOfBirth);
+      formData.append("profileId", user.data.additionalDetails._id);
+      formData.append("userId", user.data._id);
+      formData.append("gender", data.gender);
+      formData.append("contactNumber", data.contactNumber);
+      formData.append("about", data.about);
+      const response = await axios.put(`/api/profile`, formData);
       console.log("Form Data - ", data);
+      console.log("Response - ", response.data);
+      if (response.data.success) {
+        toast.success("Profile updated successfully.");
+        // router.push("/dashboard/my-profile");
+      } else {
+        toast.error("Failed to update profile. Please try again.");
+      }
     } catch (error) {
       if (error instanceof Error) {
         // If the error is an instance of Error, we can safely access its message
@@ -42,6 +61,7 @@ const EditProfile: React.FC = () => {
         // If it's some other type of error, handle it appropriately
         console.error("An unknown error occurred.");
       }
+      toast.error("Failed to update profile. Please try again.");
     }
   };
 
@@ -65,7 +85,7 @@ const EditProfile: React.FC = () => {
                 placeholder="Enter first name"
                 className="form-style"
                 {...register("firstName", { required: true })}
-                defaultValue={user?.firstName}
+                defaultValue={user?.data.firstName}
               />
               {errors.firstName && (
                 <span className="-mt-1 text-[12px] text-yellow-400">
@@ -85,7 +105,7 @@ const EditProfile: React.FC = () => {
                 placeholder="Enter last name"
                 className="form-style"
                 {...register("lastName", { required: true })}
-                defaultValue={user?.lastName}
+                defaultValue={user?.data.lastName}
               />
               {errors.lastName && (
                 <span className="-mt-1 text-[12px] text-yellow-400">
@@ -112,7 +132,7 @@ const EditProfile: React.FC = () => {
                     message: "Date of Birth cannot be in the future.",
                   },
                 })}
-                defaultValue={user?.additionalDetails?.dateOfBirth}
+                defaultValue={user?.data.additionalDetails?.dateOfBirth}
               />
               {errors.dateOfBirth && (
                 <span className="-mt-1 text-[12px] text-yellow-400">
@@ -130,7 +150,7 @@ const EditProfile: React.FC = () => {
                 id="gender"
                 className="form-style"
                 {...register("gender", { required: true })}
-                defaultValue={user?.additionalDetails?.gender}
+                defaultValue={user?.data.additionalDetails?.gender}
               >
                 {genders.map((gender, index) => (
                   <option key={index} value={gender}>
@@ -162,7 +182,7 @@ const EditProfile: React.FC = () => {
                   maxLength: { value: 12, message: "Invalid Contact Number" },
                   minLength: { value: 10, message: "Invalid Contact Number" },
                 })}
-                defaultValue={user?.additionalDetails?.contactNumber}
+                defaultValue={user?.data.additionalDetails?.contactNumber}
               />
               {errors.contactNumber && (
                 <span className="-mt-1 text-[12px] text-yellow-400">
@@ -182,7 +202,7 @@ const EditProfile: React.FC = () => {
                 placeholder="Enter Bio Details"
                 className="form-style"
                 {...register("about", { required: "Please enter your bio." })}
-                defaultValue={user?.additionalDetails?.about}
+                defaultValue={user?.data.additionalDetails?.about}
               />
               {errors.about && (
                 <span className="-mt-1 text-[12px] text-yellow-400">

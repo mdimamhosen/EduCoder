@@ -10,6 +10,7 @@ import { VscDashboard, VscSignOut } from "react-icons/vsc";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import ConfirmationModal from "../Dashboard/ConfirmationModal";
+import { RootState } from "@/redux/reducer";
 interface ModalData {
   text1: string;
   text2: string;
@@ -19,7 +20,7 @@ interface ModalData {
   btn2Handler: () => void;
 }
 const ProfileDropdown = () => {
-  const { user } = useSelector((state) => state.profile);
+  const { user } = useSelector((state: RootState) => state.profile);
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
