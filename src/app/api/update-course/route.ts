@@ -1,11 +1,7 @@
 import DatabaseConnection from "@/lib/DBconnect";
 import Profile from "@/model/Profile";
-import { Category } from "@/model/Category";
+
 import Course from "@/model/Course";
-
-import RatingAndReview from "@/model/RatingAndReview";
-
-import User from "@/model/User";
 
 import { UploadFile } from "@/utils/Uploader";
 import { NextResponse } from "next/server";

@@ -1,8 +1,6 @@
 import mongoose from "mongoose";
-import User from "./User";
+
 import Section from "./Section";
-import RatingAndReview from "./RatingAndReview";
-import { Category } from "./Category";
 
 const CSchema = new mongoose.Schema({
   courseName: { type: String },

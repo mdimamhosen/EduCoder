@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import Course from "./Course";
-import User from "./User";
+
 import SubSection from "./SubSection";
 
 const courseProgressSchema = new mongoose.Schema({

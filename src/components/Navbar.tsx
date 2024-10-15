@@ -23,9 +23,8 @@ const Navbar = () => {
 
   const [catalogOpen, setCatalogOpen] = useState(false);
 
-  const { user, loading, isNavOpen } = useSelector(
-    (state: RootState) => state.profile
-  );
+  const { user, loading } = useSelector((state: RootState) => state.profile);
+  console.log("token", token);
   const { totalItems } = useSelector((state: RootState) => state.cart);
   const dispatch = useDispatch();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

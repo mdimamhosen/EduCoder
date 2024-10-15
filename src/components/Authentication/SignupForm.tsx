@@ -5,10 +5,11 @@ import Tab from "./Tab";
 import { ACCOUNT_TYPE } from "@/utils/roles";
 import toast from "react-hot-toast";
 import Link from "next/link";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setSignupData } from "@/redux/slices/authSclice";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { RootState } from "@/redux/reducer";
 // import { useSession } from "next-auth/react";
 
 interface signUpDetails {
@@ -22,6 +23,8 @@ interface signUpDetails {
 
 const SignupForm = () => {
   const router = useRouter();
+  const { signupData } = useSelector((store: RootState) => store.auth);
+
   // const { data: session, status } = useSession();
   // const token = session?.user;
   const [loading, setLoading] = useState(false);
@@ -76,13 +79,27 @@ const SignupForm = () => {
     formData.accountType = accountType;
 
     // Dispatch signup data
-    dispatch(setSignupData(formData));
+
     setLoading(true);
 
     try {
       // Send OTP request to backend
       const response = await axios.post("/api/send-otp", { email });
+      console.log("Form Data", formData);
+      console.log("Singup data before dispatch", signupData);
+
       if (response.status === 200) {
+        dispatch(
+          setSignupData({
+            firstName,
+            lastName,
+            email,
+            password,
+            confirmPassword,
+            accountType,
+          })
+        );
+        console.log("Signup Data after dispatch", signupData);
         toast.success("OTP sent to your email");
         router.push("/register/verify-email");
       } else {
@@ -171,7 +188,6 @@ const SignupForm = () => {
             onChange={handleOnChange}
             placeholder="Enter email address"
             className="w-full rounded-[0.5rem] p-[12px] form-style"
-            autoComplete="off"
           />
         </label>
         <div className="flex gap-x-4 flex-col md:flex-row gap-y-4">

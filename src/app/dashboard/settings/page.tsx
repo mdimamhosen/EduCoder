@@ -8,7 +8,7 @@ import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 
 const Page = () => {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const userId = session?.user._id;
   const [user, setUser] = useState(null);
 
@@ -16,7 +16,9 @@ const Page = () => {
     const fetchUserData = async () => {
       if (!userId) return;
       try {
-        const result = await axios.get(`/api/user?userId=${userId}`);
+        const formData = new FormData();
+        formData.append("userId", userId);
+        const result = await axios.post(`/api/user`, { userId });
         setUser(result.data);
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -25,7 +27,6 @@ const Page = () => {
 
     fetchUserData();
   }, [userId]);
-  userId;
 
   return (
     <>

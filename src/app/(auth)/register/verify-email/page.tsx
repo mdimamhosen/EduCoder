@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 import OtpInput from "react-otp-input";
 import { BiArrowBack } from "react-icons/bi";
 import { RxCountdownTimer } from "react-icons/rx";
@@ -8,14 +9,15 @@ import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { RootState } from "@/redux/reducer";
 
 function VerifyEmail() {
   const router = useRouter();
   const [otp, setOtp] = useState<string>("");
-  const [OTPLoading, setOTPLoading] = useState(false); // Loading state for Resend OTP
-  const { signupData } = useSelector((store) => store.auth);
-
-  const [loading, setLoading] = useState(false); // Loading state for the form submission
+  const [OTPLoading, setOTPLoading] = useState(false);
+  const { signupData } = useSelector((store: RootState) => store.auth);
+  console.log("signupData from email verify: ", signupData);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!signupData) {
@@ -27,14 +29,13 @@ function VerifyEmail() {
 
   const handleVerifyAndSignup = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const {
-      accountType,
-      firstName,
-      lastName,
-      email,
-      password,
-      confirmPassword,
-    } = signupData;
+
+    if (!signupData) {
+      toast.error("Signup data is missing. Please try again.");
+      return;
+    }
+    const { accountType, firstName, lastName, password, confirmPassword } =
+      signupData;
 
     if (otp.length !== 6) {
       toast.error("Please enter a valid OTP");
@@ -52,14 +53,14 @@ function VerifyEmail() {
         accountType,
         otp,
       };
+      console.log("data to send:", data);
       const response = await axios.post("/api/register", data);
 
       if (response.status === 200) {
         toast.success("Account Created Successfully");
         router.push("/login");
-        // Add any redirection here if needed, e.g., to login page
       } else {
-        toast.error("Invalid OTP. Please try again later.");
+        toast.error("Invalid OTP. Please try again.");
       }
     } catch (error) {
       console.error(error);
@@ -70,6 +71,7 @@ function VerifyEmail() {
   };
 
   const handleResendOTP = async () => {
+    if (OTPLoading) return; // Prevent multiple clicks
     toast.success("Resending OTP...");
     setOTPLoading(true);
     try {

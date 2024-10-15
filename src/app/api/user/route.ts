@@ -1,17 +1,16 @@
 import DatabaseConnection from "@/lib/DBconnect";
-import Profile from "@/model/Profile";
+
 import Course from "@/model/Course";
 
 import User from "@/model/User";
 
 import { NextResponse } from "next/server";
-import CourseProgress from "@/model/CourseProgress";
 
-export async function GET(req: Request) {
+export async function POST(req: Request) {
   try {
     await DatabaseConnection();
-    const { searchParams } = new URL(req.url);
-    const userId = searchParams.get("userId");
+    const { userId } = await req.json();
+    console.log(userId);
 
     if (!userId) {
       return NextResponse.json(
@@ -75,7 +74,7 @@ export async function DELETE(req: Request) {
       );
     }
     const deletedUser = await User.findByIdAndDelete(userId);
-    const deletedCourses = await Course.deleteMany({ instructor: userId });
+    await Course.deleteMany({ instructor: userId });
 
     if (!deletedUser) {
       return NextResponse.json(

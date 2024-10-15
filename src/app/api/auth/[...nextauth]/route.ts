@@ -1,31 +1,28 @@
-import NextAuth from "next-auth/next";
+import NextAuth, { NextAuthOptions, DefaultSession } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import User from "@/model/User";
 import bcrypt from "bcryptjs";
-import { User as UserType, DefaultSession } from "next-auth";
 import DatabaseConnection from "@/lib/DBconnect";
 
-// Type declarations
+// Extend NextAuth types
 declare module "next-auth" {
   interface User {
     _id?: string;
-    token?: string;
     email?: string;
     firstName?: string;
     lastName?: string;
     accountType?: string;
   }
 
-  interface Session {
+  interface Session extends DefaultSession {
     user: {
       _id?: string;
       email?: string;
       firstName?: string;
       lastName?: string;
       accountType?: string;
-      isVerified?: boolean;
       token?: string;
-    } & DefaultSession["user"];
+    };
   }
 
   interface JWT {
@@ -34,14 +31,10 @@ declare module "next-auth" {
     firstName?: string;
     lastName?: string;
     accountType?: string;
-    // Add any other properties you may need
   }
 }
 
-async function login(
-  email: string,
-  password: string
-): Promise<UserType | null> {
+async function login(email: string, password: string) {
   console.log("login function");
   console.log("email: ", email);
   console.log("password: ", password);
@@ -59,7 +52,6 @@ async function login(
     }
 
     user.password = undefined; // Prevent password from being returned
-
     return user;
   } catch (error) {
     console.error(error);
@@ -67,7 +59,8 @@ async function login(
   }
 }
 
-export const authOptions = {
+// NextAuth options
+export const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/login",
   },
@@ -86,7 +79,7 @@ export const authOptions = {
           placeholder: "Enter your password",
         },
       },
-      async authorize(credentials): Promise<UserType | null> {
+      async authorize(credentials) {
         if (!credentials) return null;
         console.log(credentials);
         const user = await login(credentials.email, credentials.password);
@@ -95,9 +88,9 @@ export const authOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }: { token: JWT; user?: UserType }) {
+    async jwt({ token, user }) {
       if (user) {
-        token._id = user._id?.toString();
+        token._id = user._id;
         token.email = user.email;
         token.firstName = user.firstName;
         token.lastName = user.lastName;
@@ -105,7 +98,7 @@ export const authOptions = {
       }
       return token;
     },
-    async session({ session, token }: { session: DefaultSession; token: JWT }) {
+    async session({ session, token }) {
       if (session.user) {
         session.user._id = token._id;
         session.user.email = token.email;
@@ -129,12 +122,7 @@ export const authOptions = {
   },
 };
 
+// Export NextAuth handler
 const handler = NextAuth(authOptions);
 
-export {
-  handler as GET,
-  handler as POST,
-  handler as PUT,
-  handler as DELETE,
-  handler as PATCH,
-};
+export { handler as GET, handler as POST };
