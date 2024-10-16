@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // Define the interface for the category object
 export interface Category {
@@ -102,7 +102,7 @@ const courseSlice = createSlice({
     setStep: (state, action) => {
       state.step = action.payload;
     },
-    setCourse: (state, action) => {
+    setCourse: (state, action: PayloadAction<Course>) => {
       console.log("action.payload", action.payload);
       state.course = action.payload;
       console.log("state.course", state.course);

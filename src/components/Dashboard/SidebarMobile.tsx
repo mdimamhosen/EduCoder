@@ -24,7 +24,6 @@ const SidebarMobile = () => {
   const { data: session } = useSession();
   const user = session?.user;
   const { isNavOpen } = useSelector((state: RootState) => state.profile);
-  console.log("isNavOpen in sidebarMobile", isNavOpen);
 
   const router = useRouter();
   const [confirmationModal, setConfirmationModal] = useState<ModalData | null>(

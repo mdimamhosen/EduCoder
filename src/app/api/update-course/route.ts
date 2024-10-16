@@ -1,5 +1,4 @@
 import DatabaseConnection from "@/lib/DBconnect";
-import Profile from "@/model/Profile";
 
 import Course from "@/model/Course";
 
@@ -62,11 +61,16 @@ export async function PUT(req: Request) {
       })
       .exec();
     console.log("updatedCourse", updatedCourse);
-    return NextResponse.json({
-      success: true,
-      message: "Course updated successfully",
-      data: updatedCourse,
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Course updated successfully",
+        data: updatedCourse,
+      },
+      {
+        status: 200,
+      }
+    );
   } catch (error) {
     console.error(error);
     return NextResponse.json(

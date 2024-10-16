@@ -8,6 +8,7 @@ import Image from "next/image";
 import { RootState } from "@/redux/reducer";
 
 export default function Upload({
+  defaultImage,
   name,
   label,
   register,
@@ -17,6 +18,7 @@ export default function Upload({
   viewData,
   editData,
 }: {
+  defaultImage?: string;
   name: string;
   label: string;
   register: any;
@@ -24,7 +26,7 @@ export default function Upload({
   errors: any;
   video?: boolean;
   viewData?: any;
-  editData?: any;
+  editData?: string;
 }) {
   const { course } = useSelector((state: RootState) => state.course);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -51,7 +53,11 @@ export default function Upload({
         },
     onDrop,
   });
-
+  if (defaultImage) {
+    useEffect(() => {
+      setPreviewSource(editData);
+    }, [editData]);
+  }
   const previewFile = (file: File) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
