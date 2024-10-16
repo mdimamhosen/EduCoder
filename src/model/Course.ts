@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 import Section from "./Section";
+import RatingAndReview from "./RatingAndReview";
 
 const CSchema = new mongoose.Schema({
   courseName: { type: String },

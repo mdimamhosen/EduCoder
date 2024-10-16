@@ -24,7 +24,7 @@ const Navbar = () => {
   const [catalogOpen, setCatalogOpen] = useState(false);
 
   const { user, loading } = useSelector((state: RootState) => state.profile);
-  console.log("token", token);
+
   const { totalItems } = useSelector((state: RootState) => state.cart);
   const dispatch = useDispatch();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -211,11 +211,12 @@ const Navbar = () => {
           )}
 
           {token && <ProfileDropdown />}
-          {loading && (
-            <p className={!token ? "hidden" : "text-gray-100 text-sm"}>
-              Loading...
-            </p>
-          )}
+          {loading ||
+            (status === "loading" && (
+              <p className={!token ? "hidden" : "text-gray-100 text-sm"}>
+                Loading...
+              </p>
+            ))}
         </div>
       </div>
 

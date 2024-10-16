@@ -1,3 +1,5 @@
+import React from "react";
+
 import IconBtn from "@/components/common/IconBtn";
 import { RootState } from "@/redux/reducer";
 import { resetCourseState, setStep } from "@/redux/slices/courseSlice";

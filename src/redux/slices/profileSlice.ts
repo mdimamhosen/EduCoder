@@ -13,12 +13,14 @@ interface ProfileState {
   user: SignUpDetails | null;
   loading: boolean;
   isNavOpen: boolean;
+  userPhoto: boolean;
 }
 
 const initialState: ProfileState = {
   user: null,
   loading: false,
   isNavOpen: false,
+  userPhoto: false,
 };
 
 const profileSlice = createSlice({
@@ -34,8 +36,12 @@ const profileSlice = createSlice({
     setNavOpen(state, action: PayloadAction<boolean>) {
       state.isNavOpen = action.payload;
     },
+    setUserPhoto(state, action: PayloadAction<string>) {
+      state.userPhoto = action.payload;
+    },
   },
 });
 
-export const { setUser, setLoading, setNavOpen } = profileSlice.actions;
+export const { setUser, setLoading, setNavOpen, setUserPhoto } =
+  profileSlice.actions;
 export default profileSlice.reducer;

@@ -25,6 +25,7 @@ const EditProfile = ({ user }: { user: any }) => {
   const router = useRouter();
   const { data: session, status } = useSession();
   // const user = session?.user;
+  const userId = user?._id;
 
   const {
     register,

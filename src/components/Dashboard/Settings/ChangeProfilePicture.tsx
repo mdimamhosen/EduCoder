@@ -9,6 +9,8 @@ import { useSession } from "next-auth/react";
 import IconBtn from "@/components/common/IconBtn";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { setUserPhoto } from "@/redux/slices/profileSlice";
+import { useDispatch } from "react-redux";
 
 export default function ChangeProfilePicture({ user }: { user: any }) {
   const { status } = useSession(); // Get session status
@@ -39,6 +41,7 @@ export default function ChangeProfilePicture({ user }: { user: any }) {
       setPreviewSource(reader.result as string);
     };
   };
+  const dispatch = useDispatch();
 
   // Handle file upload logic
   const handleFileUpload = async () => {
@@ -54,6 +57,8 @@ export default function ChangeProfilePicture({ user }: { user: any }) {
 
       const resonse = await axios.put("/api/update-profile-image", formData);
       if (resonse.data.success) {
+        dispatch(setUserPhoto(true));
+
         console.log("File uploaded successfully!");
         toast.success("Profile picture updated successfully");
       }
@@ -64,6 +69,7 @@ export default function ChangeProfilePicture({ user }: { user: any }) {
       toast.error("Failed to update profile picture");
     } finally {
       setLoading(false);
+      dispatch(setUserPhoto(false));
     }
   };
 

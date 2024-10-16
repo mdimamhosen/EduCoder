@@ -15,8 +15,8 @@ export async function PUT(req: Request) {
     const updates = formData.get("updates")
       ? JSON.parse(formData.get("updates") as string)
       : {};
-    console.log(updates);
-    console.log("Profile", Profile);
+
+    console.log("Updates", updates);
 
     if (!courseId) {
       return NextResponse.json(
@@ -43,18 +43,25 @@ export async function PUT(req: Request) {
     }
 
     await course.save();
-    const updatedCourse = await Course.findById(courseId)
+    const updatedCourse = await Course.findByIdAndUpdate(
+      courseId,
+      {
+        ...updates,
+      },
+      { new: true }
+    )
       .populate({
         path: "instructor",
         // populate: { path: "additionalDetails" },
       })
       .populate("category")
-      .populate("ratingAndReviews")
+      // .populate("ratingAndReviews")
       .populate({
         path: "courseContent",
         populate: { path: "subSection" },
       })
       .exec();
+    console.log("updatedCourse", updatedCourse);
     return NextResponse.json({
       success: true,
       message: "Course updated successfully",

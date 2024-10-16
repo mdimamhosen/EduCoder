@@ -16,7 +16,7 @@ function VerifyEmail() {
   const [otp, setOtp] = useState<string>("");
   const [OTPLoading, setOTPLoading] = useState(false);
   const { signupData } = useSelector((store: RootState) => store.auth);
-  console.log("signupData from email verify: ", signupData);
+
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {

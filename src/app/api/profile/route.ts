@@ -15,7 +15,7 @@ export async function PUT(req: Request) {
     const lastName = body.get("lastName");
     const dateOfBirth = body.get("dateOfBirth");
     const gender = body.get("gender");
-    const contactNumber = body.get("contactNumber");
+    const contactNumber = parseInt(body.get("contactNumber") as string);
     const about = body.get("about");
 
     const updatedProfile = await Profile.findByIdAndUpdate(

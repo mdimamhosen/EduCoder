@@ -1,7 +1,9 @@
 import cloudinary from "@/lib/cloudinary";
 import { UploadApiResponse } from "cloudinary";
 
-export interface CloudinaryUploadResponse extends UploadApiResponse {}
+export interface CloudinaryUploadResponse extends UploadApiResponse {
+  // Add any additional properties here
+}
 
 export const UploadFile = async (
   file: File,

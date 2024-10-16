@@ -54,7 +54,7 @@ const Page: React.FC = () => {
   if (loading) {
     return (
       <div
-        className="text-center min-h-[calc(100vh-3.5rem)] w-screen
+        className="text-center min-h-[calc(100vh-3.5rem)] w-full
      flex justify-center items-center text-gray-400"
       >
         <p>Loading...</p>

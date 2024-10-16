@@ -3,7 +3,7 @@
 import { sidebarLinks } from "@/data/dashboard-links";
 import React, { useState } from "react";
 import { VscSignOut } from "react-icons/vsc";
-import { useDispatch } from "react-redux";
+
 import SidebarLink from "./SidebarLink";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";

@@ -5,12 +5,12 @@ import React from "react";
 import { RootState } from "@/redux/reducer";
 import { FaCheck } from "react-icons/fa";
 import { useSelector } from "react-redux";
-import CourseInformationForm from "./CourseInformationForm";
-import CourseBuilderForm from "./CourseBuilderForm";
-import PublishCourse from "./PublishCourse";
+import { useParams } from "next/navigation";
+import CourseInformationForm from "../AddCourse/CourseInformationForm";
 
-export default function RenderSteps() {
+export default function EditCourseRenderSteps() {
   const { step } = useSelector((state: RootState) => state.course);
+  const { courseId } = useParams();
 
   // let step = 3;
   const steps = [
@@ -82,8 +82,8 @@ export default function RenderSteps() {
       </div>
       {/* Render specific component based on current step */}
       {step === 1 && <CourseInformationForm />}
-      {step === 2 && <CourseBuilderForm />}
-      {step === 3 && <PublishCourse />}
+      {/*    {step === 2 && <CourseBuilderForm />}
+      {step === 3 && <PublishCourse />} */}
     </>
   );
 }

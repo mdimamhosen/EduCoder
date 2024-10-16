@@ -9,6 +9,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import ConfirmationModal from "./ConfirmationModal";
 import toast from "react-hot-toast";
+import { RootState } from "@/redux/reducer";
 
 interface ModalData {
   text1: string;
@@ -22,7 +23,7 @@ interface ModalData {
 const SidebarMobile = () => {
   const { data: session } = useSession();
   const user = session?.user;
-  const { isNavOpen } = useSelector((state) => state.profile);
+  const { isNavOpen } = useSelector((state: RootState) => state.profile);
   console.log("isNavOpen in sidebarMobile", isNavOpen);
 
   const router = useRouter();

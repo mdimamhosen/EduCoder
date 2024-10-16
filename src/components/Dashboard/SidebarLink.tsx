@@ -2,7 +2,7 @@
 import * as Icons from "react-icons/vsc";
 import Link from "next/link";
 import React from "react";
-
+import { usePathname } from "next/navigation";
 interface LinkProps {
   link: { id?: string; name?: string; path: string; type?: string };
   iconName?: string;
@@ -11,12 +11,17 @@ interface LinkProps {
 const SidebarLink = ({ link, iconName }: LinkProps) => {
   const Icon = Icons[iconName as keyof typeof Icons];
 
+  const pathname = usePathname();
   // Check if the current route matches the link path
   const matchRoute = (route: string) => {
-    if (typeof window !== "undefined") {
-      return window.location.pathname === route;
-    }
-    return false;
+    // Get the last segment of the link route and remove "dashboard" if it exists
+    let link = route.split("/").pop()?.replace("dashboard", "") || "";
+
+    // Get the last segment of the current pathname and remove "dashboard" if it exists
+    let lastSegment = pathname.split("/").pop()?.replace("dashboard", "") || "";
+
+    // Compare the cleaned-up last segments
+    return lastSegment === link;
   };
 
   // Handle invalid icon names gracefully
@@ -41,6 +46,7 @@ const SidebarLink = ({ link, iconName }: LinkProps) => {
         ></span>
         <div className="flex items-center gap-x-2">
           <Icon className="text-lg" />
+
           <span>{link.name}</span>
         </div>
       </Link>

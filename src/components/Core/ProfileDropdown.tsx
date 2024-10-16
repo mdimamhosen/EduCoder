@@ -1,5 +1,8 @@
 "use client";
-import { signOut } from "next-auth/react";
+
+import React, { useEffect } from "react";
+
+import { signOut, useSession } from "next-auth/react";
 import { useState, useRef } from "react";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
 import Image from "next/image";
@@ -11,6 +14,7 @@ import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import ConfirmationModal from "../Dashboard/ConfirmationModal";
 import { RootState } from "@/redux/reducer";
+import axios from "axios";
 interface ModalData {
   text1: string;
   text2: string;
@@ -21,7 +25,33 @@ interface ModalData {
 }
 const ProfileDropdown = () => {
   const { user } = useSelector((state: RootState) => state.profile);
+  const { data: session, status } = useSession();
+  const userId = session?.user._id;
+  const [userDB, setUserDB] = useState(null);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (!userId) return;
+
+      try {
+        setLoading(true);
+        const formData = new FormData();
+        formData.append("userId", userId);
+        const result = await axios.post(`/api/user`, { userId });
+        setUserDB(result.data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, [userId, router]);
+  console.log(userDB);
+
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const [confirmationModal, setConfirmationModal] = useState<ModalData | null>(
@@ -45,7 +75,12 @@ const ProfileDropdown = () => {
         <div className="flex items-center gap-x-1  ">
           <div className=" hover:scale-95 hover:border  transition-all duration-300 p-[1px] ease-linear hover:border-white  rounded-full group">
             <Image
-              src={user?.image}
+              src={
+                loading || status === "loading"
+                  ? "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"
+                  : userDB?.data.image ||
+                    "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"
+              }
               alt={`${user?.firstName}`}
               width={30}
               height={30}

@@ -3,7 +3,7 @@ import ChipInput from "./ChipInput";
 import { COURSE_STATUS } from "@/utils/roles";
 import { HiOutlineCurrencyRupee } from "react-icons/hi";
 import { MdNavigateNext } from "react-icons/md";
-import IconBtn from "@/components/common/IconBtn";
+
 import Upload from "./Upload";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -44,7 +44,7 @@ export interface Course {
 }
 
 export default function CourseInformationForm() {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const userId = session?.user?._id;
   const {
     register,
@@ -59,6 +59,7 @@ export default function CourseInformationForm() {
   const { course, editCourse } = useSelector(
     (state: RootState) => state.course
   );
+  console.log("course data from edit course:", course);
   const [loading, setLoading] = useState(false);
   const [courseCategories, setCourseCategories] = useState<Category[]>([]);
 
@@ -95,18 +96,7 @@ export default function CourseInformationForm() {
       setValue("courseImage", course.thumbnail);
     }
     setLoading(false);
-  }, [
-    course.category,
-    course.courseDescription,
-    course.courseName,
-    course.instructions,
-    course.price,
-    course.tag,
-    course.thumbnail,
-    course.whatYouWillLearn,
-    editCourse,
-    setValue,
-  ]);
+  }, []);
 
   const isFormUpdated = () => {
     const currentValues = getValues();

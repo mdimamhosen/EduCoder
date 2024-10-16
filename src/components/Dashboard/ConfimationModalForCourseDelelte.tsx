@@ -1,7 +1,7 @@
 import IconBtn from "../common/IconBtn";
 import React from "react";
 
-export default function ConfirmationModal({
+export default function ConfirmationModalForCourseDelete({
   modalData,
 }: {
   modalData: {
