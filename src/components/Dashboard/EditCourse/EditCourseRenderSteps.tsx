@@ -7,9 +7,12 @@ import { FaCheck } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { useParams } from "next/navigation";
 import EditCourseCourseInformationForm from "./EditCourseCourseInformationForm";
+import EditCourseCourseBuilderForm from "./EditCourseCourseBuilderForm";
+import EditCoursePublishCourse from "./EditCoursePublishCourse";
 
 export default function EditCourseRenderSteps() {
   const { step } = useSelector((state: RootState) => state.course);
+
   const { courseId } = useParams();
   const steps = [
     {
@@ -81,8 +84,8 @@ export default function EditCourseRenderSteps() {
       {courseId}
       {/* Render specific component based on current step */}
       {step === 1 && <EditCourseCourseInformationForm />}
-      {/*    {step === 2 && <EditCourseCourseBuilderForm />}
-      {step === 3 && <EditCoursePublishCourse />} */}
+      {step === 2 && <EditCourseCourseBuilderForm />}
+      {step === 3 && <EditCoursePublishCourse />}
     </>
   );
 }

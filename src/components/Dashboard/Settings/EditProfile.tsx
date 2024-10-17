@@ -2,7 +2,7 @@
 import React from "react";
 
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+
 import { useForm, SubmitHandler } from "react-hook-form";
 import IconBtn from "@/components/common/IconBtn";
 import toast from "react-hot-toast";
@@ -23,9 +23,6 @@ const genders = ["Male", "Female", "Non-Binary", "Prefer not to say", "Other"];
 
 const EditProfile = ({ user }: { user: any }) => {
   const router = useRouter();
-  const { data: session, status } = useSession();
-  // const user = session?.user;
-  const userId = user?._id;
 
   const {
     register,

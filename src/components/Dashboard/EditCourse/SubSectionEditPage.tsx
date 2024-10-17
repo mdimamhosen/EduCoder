@@ -1,21 +1,53 @@
-import React from "react";
-import { RootState } from "@/redux/reducer";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { RxCross2 } from "react-icons/rx";
-import { useDispatch, useSelector } from "react-redux";
-import Upload from "./Upload";
+import { useDispatch } from "react-redux";
+
 import IconBtn from "@/components/common/IconBtn";
 import axios from "axios";
-import { setCourse } from "@/redux/slices/courseSlice";
-export default function SubSectionModal({
+import Upload from "../AddCourse/Upload";
+import { useRouter } from "next/navigation";
+
+export interface Category {
+  _id: string;
+  name: string;
+  description?: string;
+}
+
+export interface Course {
+  _id?: string;
+  courseName: string;
+  courseDescription: string;
+  price: number;
+  tag: string[];
+  courseContent: Section[];
+  status: "Draft" | "Published";
+  category: Category;
+}
+
+interface Section {
+  _id: string;
+  sectionName: string;
+  subSection: SubSection[];
+}
+
+interface SubSection {
+  _id: string;
+  title: string;
+  timeDuration: string;
+  description: string;
+  videoUrl: string;
+}
+
+export default function SubSectionEditPageModal({
   modalData,
   setModalData,
   add,
   view,
   edit,
   courseId,
+  editpage,
 }: {
   modalData: any;
   setModalData: any;
@@ -23,6 +55,7 @@ export default function SubSectionModal({
   view: boolean;
   edit: boolean;
   courseId: any;
+  editpage?: boolean;
 }) {
   const {
     register,
@@ -32,44 +65,55 @@ export default function SubSectionModal({
     getValues,
   } = useForm();
 
-  // console.log("view", view)
-  // console.log("edit", edit)
-  // console.log("add", add)
-
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-  // const { token } = useSelector((state) => state.auth)
-  const { course } = useSelector((state: RootState) => state.course);
+  const [course, setCourse] = useState<Course | null>(null);
+
+  // Define the getCourseDetails function
+  const getCourseDetails = async () => {
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append("courseId", String(courseId));
+      const response = await axios.post(`/api/single-course`, formData);
+      if (response.data.success) {
+        setCourse(response.data.data);
+      } else {
+        toast.error("Failed to fetch course details.");
+      }
+    } catch (error) {
+      toast.error("Error fetching course details");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getCourseDetails(); // Fetch course details on component mount
+  }, []);
 
   useEffect(() => {
     if (view || edit) {
-      console.log("modalData", modalData);
       setValue("lectureTitle", modalData.title);
       setValue("lectureDesc", modalData.description);
       setValue("lectureVideo", modalData.videoUrl);
     }
-  }, []);
+  }, [modalData, setValue, view, edit]);
 
-  // detect whether form is updated or not
+  // Detect whether form is updated or not
   const isFormUpdated = () => {
     const currentValues = getValues();
-    console.log("changes after editing form values:", currentValues);
-    if (
+    return (
       currentValues.lectureTitle !== modalData.title ||
       currentValues.lectureDesc !== modalData.description ||
       currentValues.lectureVideo !== modalData.videoUrl
-    ) {
-      return true;
-    }
-    return false;
+    );
   };
 
-  // handle the editing of subsection
+  // Handle the editing of subsection
   const handleEditSubsection = async () => {
     const currentValues = getValues();
-    // console.log("changes after editing form values:", currentValues)
     const formData = new FormData();
-    // console.log("Values After Editing form values:", currentValues)
     formData.append("sectionId", modalData.sectionId);
     formData.append("subSectionId", modalData._id);
     if (currentValues.lectureTitle !== modalData.title) {
@@ -82,21 +126,19 @@ export default function SubSectionModal({
       formData.append("video", currentValues.lectureVideo);
     }
 
-    // setLoading(true);
-    // const result = await updateSubSection(formData, token)
-    // if (result) {
-    //   // console.log("result", result)
-    //   // update the structure of course
-    //   const updatedCourseContent = course.courseContent.map((section) =>
-    //     section._id === modalData.sectionId ? result : section
-    //   )
-    //   const updatedCourse = { ...course, courseContent: updatedCourseContent }
-    //   dispatch(setCourse(updatedCourse))
-    // }
-    // setModalData(null);
-    // setLoading(false);
+    try {
+      const result = await axios.post("/api/editSubSection", formData);
+      if (result.data.success) {
+        toast.success("Subsection updated successfully!");
+      } else {
+        toast.error("Error updating subsection!");
+      }
+    } catch (error) {
+      console.error("Error updating subsection:", error);
+      toast.error("Error updating subsection!");
+    }
   };
-
+  const router = useRouter();
   const onSubmit = async (data: any) => {
     if (view) {
       console.log("viewing");
@@ -108,7 +150,8 @@ export default function SubSectionModal({
       if (!isFormUpdated()) {
         toast.error("No changes made to the form");
       } else {
-        handleEditSubsection();
+        await handleEditSubsection(); // Await the edit function
+        await getCourseDetails(); // Fetch updated data after editing
       }
       return;
     }
@@ -124,24 +167,19 @@ export default function SubSectionModal({
       formData.append("description", data.lectureDesc);
     }
 
-    // Only append the video file if it's a valid file object
     if (data.lectureVideo) {
       formData.append("video", data.lectureVideo);
     }
-    formData.append("courseId", courseId);
+    formData.append("courseId", String(courseId));
 
     setLoading(true);
-    console.log("Form Data:", data.lectureVideo);
-
-    for (const pair of formData.entries()) {
-      console.log(`${pair[0]}: ${pair[1]}`);
-    }
 
     try {
       const result = await axios.post("/api/subSection", formData);
 
       if (result.data.success) {
-        dispatch(setCourse(result.data.data));
+        router.refresh();
+        await getCourseDetails();
         toast.success("Lecture added successfully!");
       } else {
         toast.error("Error adding lecture!");

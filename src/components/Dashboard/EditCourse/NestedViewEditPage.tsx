@@ -1,34 +1,30 @@
-import React from "react";
-
+import React, { useState } from "react";
 import { RootState } from "@/redux/reducer";
-import { useState } from "react";
-import { AiFillCaretDown } from "react-icons/ai";
-import { FaPlus } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
 import { MdEdit } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { RxDropdownMenu } from "react-icons/rx";
-import { useDispatch, useSelector } from "react-redux";
-import SubSectionModal from "./SubSectionModal";
 import ConfirmationModal from "../ConfirmationModal";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { setCourse } from "@/redux/slices/courseSlice";
+import { RxDropdownMenu } from "react-icons/rx";
+import { AiFillCaretDown } from "react-icons/ai";
+import { FaPlus } from "react-icons/fa";
+import SubSectionModal from "../AddCourse/SubSectionModal";
+import SubSectionEditPageModal from "./SubSectionEditPage";
 
-// Define interfaces for sections and subsections
 interface SubSection {
   _id: string;
-  title: string;
+  title?: string;
+  timeDuration: string;
+  description: string;
+  videoUrl: string;
 }
 
 interface Section {
   _id: string;
   sectionName: string;
   subSection: SubSection[];
-}
-
-interface Course {
-  _id: string;
-  courseContent: Section[];
 }
 
 interface ModalData {
@@ -42,71 +38,55 @@ interface ModalData {
 
 interface NestedViewProps {
   handleChangeEditSectionName: (sectionId: string, sectionName: string) => void;
-  courseId?: any;
+  courseId?: string;
+  defaultData?: Section[]; // Expecting an array of sections
 }
 
-export default function NestedView({
+export default function NestedViewEditPage({
   handleChangeEditSectionName,
+  courseId,
+  defaultData,
 }: NestedViewProps) {
   const { course } = useSelector((state: RootState) => state.course);
   const dispatch = useDispatch();
 
-  // States to keep track of mode of modal [add, view, edit]
-  const [addSubSection, setAddSubsection] = useState<string | null>(null);
-  const [viewSubSection, setViewSubSection] = useState<SubSection | null>(null);
-  const [editSubSection, setEditSubSection] = useState<
-    (SubSection & { sectionId: string }) | null
-  >(null);
-  // To keep track of confirmation modal
   const [confirmationModal, setConfirmationModal] = useState<ModalData | null>(
     null
   );
+  const [addSubSection, setAddSubsection] = useState<string | null>(null);
+  const [viewSubSection, setViewSubSection] = useState<SubSection | null>(null);
+  const [editSubSection, setEditSubSection] = useState<SubSection | null>(null);
 
-  const handleDeleteSection = async (sectionId: any) => {
+  const handleDeleteSection = async (sectionId: string) => {
     try {
       const result = await axios.delete(`/api/section`, {
         data: {
           sectionId: sectionId,
-          courseId: course._id,
+          courseId: courseId,
         },
       });
       if (result.data.success) {
         dispatch(setCourse(result.data.data));
+        toast.success("Section Deleted Successfully!");
       }
-      toast.success("Section Deleted Successfully!");
       setConfirmationModal(null);
     } catch (error) {
       console.error("Error deleting section:", error);
       toast.error("Error deleting section!");
     }
-
-    toast.success("Section Deleted Successfully!");
   };
-
   const handleDeleteSubSection = async (
     subSectionId: string,
     sectionId: string
-  ) => {
-    // Implement the deleteSubSection logic here.
-    // const result = await deleteSubSection({ subSectionId, sectionId, token })
-    // if (result) {
-    //   const updatedCourseContent = course.courseContent.map((section) =>
-    //     section._id === sectionId ? result : section
-    //   );
-    //   const updatedCourse = { ...course, courseContent: updatedCourseContent };
-    //   dispatch(setCourse(updatedCourse));
-    // }
-    // setConfirmationModal(null);
-    toast.success("Lecture Deleted Successfully!");
-  };
+  ) => {};
+
+  const sectionsToRender = defaultData || course?.courseContent;
 
   return (
     <>
       <div className="rounded-lg bg-gray-800 p-6 px-8" id="nestedViewContainer">
-        {course?.courseContent?.map((section) => (
-          // Section Dropdown
+        {sectionsToRender?.map((section) => (
           <details key={section._id} open>
-            {/* Section Dropdown Content */}
             <summary className="flex cursor-pointer items-center justify-between border-b-2 border-b-gray-600 py-2">
               <div className="flex items-center gap-x-3">
                 <RxDropdownMenu className="text-2xl text-gray-300" />
@@ -144,7 +124,6 @@ export default function NestedView({
               </div>
             </summary>
             <div className="px-6 pb-4">
-              {/* Render All Sub Sections Within a Section */}
               {section.subSection.map((data) => (
                 <div
                   key={data?._id}
@@ -184,7 +163,6 @@ export default function NestedView({
                   </div>
                 </div>
               ))}
-              {/* Add New Lecture to Section */}
               <button
                 onClick={() => setAddSubsection(section._id)}
                 className="mt-3 flex items-center gap-x-1 text-yellow-50"
@@ -196,39 +174,42 @@ export default function NestedView({
           </details>
         ))}
       </div>
+
       {/* Modal Display */}
       {addSubSection ? (
-        <SubSectionModal
+        <SubSectionEditPageModal
           modalData={addSubSection}
           setModalData={setAddSubsection}
           add={true}
           view={false}
-          courseId={course._id}
+          courseId={courseId}
           edit={false}
+          editpage={true}
         />
       ) : viewSubSection ? (
-        <SubSectionModal
+        <SubSectionEditPageModal
           modalData={viewSubSection}
           setModalData={setViewSubSection}
           view={true}
           add={false}
           edit={false}
           courseId={course._id}
+          editpage={true}
         />
       ) : editSubSection ? (
-        <SubSectionModal
+        <SubSectionEditPageModal
           modalData={editSubSection}
           setModalData={setEditSubSection}
           edit={true}
           view={false}
           courseId={course._id}
           add={false}
+          editpage={true}
         />
       ) : null}
+
       {/* Confirmation Modal */}
-      {confirmationModal ? (
-        <ConfirmationModal modalData={confirmationModal} />
-      ) : null}
+      {confirmationModal && <ConfirmationModal modalData={confirmationModal} />}
     </>
   );
 }
