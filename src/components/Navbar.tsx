@@ -163,7 +163,7 @@ const Navbar = () => {
                                   subLink._id
                                 }`} // Concatenate _id with a dash
                               >
-                                <button className="font-semibold text-gray-300 border-gray-500 border w-full py-1 rounded-md my-1">
+                                <button className="font-semibold bg-gray-200  text-gray-800 border-gray-500 border w-full py-1 rounded-md my-1 hover:bg-gray-800 hover:text-gray-200 ease-linear duration-300">
                                   {subLink.name}
                                 </button>
                               </Link>
