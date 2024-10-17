@@ -90,6 +90,7 @@ const CourseDetails = () => {
           userId: token._id,
         });
         if (buyCourse.data.success) {
+          router.push(`/dashboard/enrolled-courses`);
           toast.success("Course Purchased Successfully");
         }
       }

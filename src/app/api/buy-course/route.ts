@@ -21,8 +21,14 @@ export async function POST(req: Request) {
       );
     }
 
-    // Fetch course details
-    const course = await Course.findById(courseId);
+    // Update the course's enrolled students list
+    const course = await Course.findByIdAndUpdate(
+      courseId,
+      {
+        $push: { studentsEnrolled: userId },
+      },
+      { new: true }
+    );
 
     if (!course) {
       return NextResponse.json(
@@ -53,6 +59,7 @@ export async function POST(req: Request) {
       );
     }
 
+    // Get the course instructor as the seller
     const sellerId = course.instructor;
 
     // Create a new CourseSell entry
@@ -60,7 +67,7 @@ export async function POST(req: Request) {
       course: courseId,
       buyer: userId,
       seller: sellerId,
-      price: course.price,
+      price: course.price, // Assuming price is a part of the course model
     });
 
     return NextResponse.json(
