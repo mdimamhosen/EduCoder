@@ -15,7 +15,12 @@ import { useSession } from "next-auth/react";
 import ProfileDropdown from "./Core/ProfileDropdown";
 import { setLoading, setNavOpen, setUser } from "@/redux/slices/profileSlice";
 import { RootState } from "@/redux/reducer";
-
+import axios from "axios";
+interface Category {
+  _id: string;
+  name: string;
+  description: string;
+}
 const Navbar = () => {
   const pathname = usePathname();
   const { data: session, status } = useSession();
@@ -28,12 +33,22 @@ const Navbar = () => {
   const { totalItems } = useSelector((state: RootState) => state.cart);
   const dispatch = useDispatch();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [subLinks, setSubLinks] = useState([
-    { name: "Data Structures", courses: ["Array", "LinkedList", "Tree"] },
-    { name: "Algorithms", courses: ["Sorting", "Graph Algorithms"] },
-    { name: "Python", courses: ["Basics", "OOP"] },
-    { name: "JavaScript", courses: ["ES6", "React"] },
-  ]);
+  const [subLinks, setSubLinks] = useState<Category[]>([]);
+
+  useEffect(() => {
+    const getCategoriesFromDb = async () => {
+      try {
+        const response = await axios.get("/api/categories");
+        if (response.data.success) {
+          setSubLinks(response.data.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getCategoriesFromDb();
+  }, []);
 
   useEffect(() => {
     const updateUserState = async () => {
@@ -140,21 +155,18 @@ const Navbar = () => {
                         ) : subLinks && subLinks.length ? (
                           subLinks.map((subLink, i) => (
                             <div key={i}>
-                              <p className="font-semibold text-gray-300">
-                                {subLink.name}
-                              </p>
-                              {subLink.courses.map((course, j) => (
-                                <Link
-                                  href={`/catalog/${subLink.name
-                                    .split(" ")
-                                    .join("-")
-                                    .toLowerCase()}/${course.toLowerCase()}`}
-                                  className="block rounded-lg bg-transparent py-2 pl-4 hover:bg-gray-800"
-                                  key={j}
-                                >
-                                  {course}
-                                </Link>
-                              ))}
+                              <Link
+                                href={`/Courses/${subLink.name
+                                  .trim()
+                                  .replace(/\s+/g, "-") // Replace spaces with dashes
+                                  .replace(/[^a-zA-Z0-9-]/g, "")}/${
+                                  subLink._id
+                                }`} // Concatenate _id with a dash
+                              >
+                                <button className="font-semibold text-gray-300 border-gray-500 border w-full py-1 rounded-md my-1">
+                                  {subLink.name}
+                                </button>
+                              </Link>
                             </div>
                           ))
                         ) : (
