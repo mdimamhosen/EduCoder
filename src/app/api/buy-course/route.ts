@@ -3,6 +3,7 @@ import Course from "@/model/Course";
 import User from "@/model/User";
 import CourseSell from "@/model/CourseSell"; // Import CourseSell model
 import { NextResponse } from "next/server";
+import CourseProgress from "@/model/CourseProgress";
 
 export async function POST(req: Request) {
   await DatabaseConnection();
@@ -20,6 +21,7 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
+    // const courseProgress = await CourseProgress
 
     // Update the course's enrolled students list
     const course = await Course.findByIdAndUpdate(
