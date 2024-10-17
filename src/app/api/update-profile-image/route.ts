@@ -34,7 +34,7 @@ export async function PUT(req: Request) {
       .populate({
         path: "courseProgress",
         populate: {
-          path: "courseId",
+          path: "courseID",
           model: "Course",
         },
       });

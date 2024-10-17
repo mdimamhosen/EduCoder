@@ -30,11 +30,10 @@ export async function POST(req: Request) {
           model: "User",
         },
       })
-      .populate("courseProgress") // Populate user's course progress
       .populate({
         path: "courseProgress",
         populate: {
-          path: "courseId", // Assuming there's a courseId reference in CourseProgress model
+          path: "courseID", // Assuming there's a courseId reference in CourseProgress model
           model: "Course",
         },
       });

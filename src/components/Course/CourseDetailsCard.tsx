@@ -40,7 +40,7 @@ function CourseDetailsCard({
       toast.error("You are an Instructor. You can't buy a course.");
       return;
     }
-    if (token) {
+    if (user) {
       dispatch(addToCart(course));
       return;
     }

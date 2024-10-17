@@ -1,7 +1,7 @@
 import DatabaseConnection from "@/lib/DBconnect";
 import Course from "@/model/Course";
 import User from "@/model/User";
-import CourseSell from "@/model/CourseSell"; // Import CourseSell model
+import CourseSell from "@/model/CourseSell";
 import { NextResponse } from "next/server";
 import CourseProgress from "@/model/CourseProgress";
 
@@ -11,7 +11,6 @@ export async function POST(req: Request) {
   try {
     const { courseId, userId } = await req.json();
 
-    // Validate input data
     if (!courseId || !userId) {
       return NextResponse.json(
         {
@@ -21,9 +20,7 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
-    // const courseProgress = await CourseProgress
 
-    // Update the course's enrolled students list
     const course = await Course.findByIdAndUpdate(
       courseId,
       {
@@ -42,7 +39,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // Fetch user and update course list
     const user = await User.findByIdAndUpdate(
       userId,
       {
@@ -61,22 +57,37 @@ export async function POST(req: Request) {
       );
     }
 
-    // Get the course instructor as the seller
     const sellerId = course.instructor;
 
-    // Create a new CourseSell entry
     const saveSellData = await CourseSell.create({
       course: courseId,
       buyer: userId,
       seller: sellerId,
-      price: course.price, // Assuming price is a part of the course model
+      price: course.price,
     });
+
+    const courseProgress = await CourseProgress.create({
+      courseID: courseId,
+      userId: userId,
+      completedVideos: [],
+    });
+
+    await User.findByIdAndUpdate(
+      userId,
+      {
+        $push: { courseProgress: courseProgress._id },
+      },
+      { new: true }
+    );
 
     return NextResponse.json(
       {
         success: true,
-        message: "Course bought successfully.",
-        data: saveSellData,
+        message: "Course bought and progress initialized successfully.",
+        data: {
+          sellData: saveSellData,
+          courseProgress: courseProgress,
+        },
       },
       { status: 200 }
     );
