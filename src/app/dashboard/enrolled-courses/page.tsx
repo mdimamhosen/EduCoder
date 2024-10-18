@@ -24,19 +24,22 @@ const EnrolledCourses = () => {
   const [enrolledCourses, setEnrolledCourses] = useState([]);
   const [randomDurations, setRandomDurations] = useState([]);
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const getEnrolledCourses = async () => {
+    setLoading(true);
     try {
       const res = await axios.post(`/api/enrolled-courses`, {
         userId: userId,
       });
 
-      // Set enrolled courses from the response correctly
-      console.log(res.data.data.courses); // Verify the structure of courses in response
-      setEnrolledCourses(res.data.data.courses || []); // Ensure it sets to an empty array if no courses
+      console.log(res.data.data.courses);
+      setEnrolledCourses(res.data.data.courses || []);
+      setLoading(false);
     } catch (error) {
       console.log("Could not fetch enrolled courses.");
       console.log(error);
+      setLoading(false);
     }
   };
 
@@ -50,6 +53,16 @@ const EnrolledCourses = () => {
   useEffect(() => {
     setRandomDurations(generateRandomDurations());
   }, []);
+  if (loading || status === "loading" || !enrolledCourses) {
+    <div className="  min-h-[calc(100vh-3.5rem)] bg-gray-800 text-gray-300 flex justify-center items-center">
+      Loading...
+    </div>;
+  }
+  if (enrolledCourses.length === 0) {
+    <p className="grid h-[10vh] w-full place-content-center bg-slate-800 text-gray-300">
+      You have not enrolled in any course yet.
+    </p>;
+  }
 
   return (
     <>
@@ -58,10 +71,6 @@ const EnrolledCourses = () => {
         <div className="  min-h-[calc(100vh-3.5rem)] bg-gray-800 text-gray-300 flex justify-center items-center">
           Loading...
         </div>
-      ) : !enrolledCourses.length ? (
-        <p className="grid h-[10vh] w-full place-content-center text-gray-300">
-          You have not enrolled in any course yet.
-        </p>
       ) : (
         <div className="my-8   ">
           {/* Headings */}
@@ -81,9 +90,7 @@ const EnrolledCourses = () => {
               <div
                 className="flex w-[45%] cursor-pointer items-center gap-4 px-5 py-3"
                 onClick={() => {
-                  router.push(
-                    `/view-course/${course?._id}/section/${course.courseContent?.[0]?._id}/sub-section/${course.courseContent?.[0]?.subSection?.[0]?._id}`
-                  );
+                  router.push(`/view-course/${course?._id}`);
                 }}
               >
                 <Image
