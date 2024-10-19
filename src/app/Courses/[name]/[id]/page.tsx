@@ -35,7 +35,7 @@ const CatalogPage = () => {
           (course) => course.studentsEnrolled.length === 0
         );
 
-        setCatalogPageData(otherCourses);
+        setCatalogPageData(allCourses);
         setCatalogPageDataTopCourse(topCourses);
         setCategory(response.data.category);
       } else {
