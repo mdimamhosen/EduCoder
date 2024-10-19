@@ -62,22 +62,22 @@ const CatalogPage = () => {
     );
   }
 
-  if (!catalogPageData.length && !catalogPageDataTopCourse.length) {
-    return (
-      <div className="grid min-h-[calc(100vh-3.5rem)] place-items-center">
-        <p className="text-xl text-gray-300">No Data Found</p>
-      </div>
-    );
-  }
+  // if (!catalogPageData.length && !catalogPageDataTopCourse.length) {
+  //   return (
+  //     <div className="grid min-h-[calc(100vh-3.5rem)] bg-slate-800 place-items-center">
+  //       <p className="text-xl text-gray-300">No Data Found</p>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="bg-gray-950">
       {/* Hero Section */}
       <div className="box-content bg-gray-800 px-4 mx-auto">
         <div className="mx-auto flex min-h-[260px] flex-col justify-center gap-4 py-16 w-11/12 max-w-maxContent">
-          <p className="text-sm text-gray-100">
+          <p className="text-lg text-gray-50">
             {`Home / Catalog / `}
-            <span className="text-yellow-200">{name}</span>
+            <span className="text-yellow-400">{name}</span>
           </p>
           <p className="text-3xl text-gray-400">{name}</p>
           <p className="max-w-[870px] text-gray-400">
@@ -135,7 +135,9 @@ const CatalogPage = () => {
         )}
         {catalogPageDataTopCourse.length === 0 && (
           <div>
-            <p className="text-xl text-gray-300">No Top Courses Found</p>
+            <p className="text-xl text-gray-300">
+              No Top Courses Found on {name}
+            </p>
           </div>
         )}
       </div>

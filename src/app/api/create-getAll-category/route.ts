@@ -7,6 +7,7 @@ export async function POST(req: Request) {
 
   try {
     const { name, description } = await req.json();
+    console.log(name, description);
 
     if (!name || !description) {
       return NextResponse.json(

@@ -5,9 +5,11 @@ import "swiper/css/free-mode";
 import "swiper/css/pagination";
 import { FreeMode, Pagination } from "swiper/modules"; // Ensure correct module imports
 import Course_Card from "./Course_Card";
+import { useParams } from "next/navigation";
 // import Course_Card from './Course_Card'
 
 const CourseSlider = ({ Courses }) => {
+  const { name, id } = useParams();
   return (
     <>
       {Courses?.length ? (
@@ -33,7 +35,9 @@ const CourseSlider = ({ Courses }) => {
           ))}
         </Swiper>
       ) : (
-        <p className="text-xl text-gray-300">No Course Found</p>
+        <p className=" text-lg lg:text-xl text-gray-300">
+          No Course Found on {name}
+        </p>
       )}
     </>
   );
