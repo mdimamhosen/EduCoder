@@ -79,7 +79,7 @@ const CatalogPage = () => {
             {`Home / Catalog / `}
             <span className="text-yellow-400">{name}</span>
           </p>
-          <p className="text-3xl text-gray-400">{name}</p>
+          <p className="text-3xl text-gray-300">{name}</p>
           <p className="max-w-[870px] text-gray-400">
             {!loading && category?.description}
           </p>
