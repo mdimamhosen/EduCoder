@@ -21,8 +21,20 @@ export async function POST(req: Request) {
       );
     }
 
-    // Find the user and populate the courses
-    const courseWithId = await User.findById(userId).populate("courses").exec();
+    const courseWithId = await User.findById(userId)
+      .populate({
+        path: "courses",
+        populate: [
+          {
+            path: "category",
+          },
+          {
+            path: "courseContent",
+            populate: { path: "subSection" },
+          },
+        ],
+      })
+      .exec();
 
     // Check if the user exists
     if (!courseWithId) {

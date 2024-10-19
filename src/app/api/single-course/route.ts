@@ -15,7 +15,6 @@ export async function POST(req: Request) {
         // populate: { path: "additionalDetails" },
       })
       .populate("category")
-      // .populate("ratingAndReviews")
       .populate({
         path: "courseContent",
         populate: { path: "subSection" },

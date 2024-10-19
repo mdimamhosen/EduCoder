@@ -26,6 +26,12 @@ const nextConfig = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "avatars.dicebear.com", // Added Dicebear hostname
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
   typescript: {

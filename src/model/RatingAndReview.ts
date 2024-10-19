@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import User from "./User";
-import Course from "./Course";
 
 const ratingAndReviewSchema = new mongoose.Schema({
   user: {
@@ -15,7 +14,7 @@ const ratingAndReviewSchema = new mongoose.Schema({
   },
   course: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: Course,
+    ref: "Course",
     index: true,
   },
 });
