@@ -148,8 +148,8 @@ const Navbar = () => {
                     >
                       <p>{link.title}</p>
                       <BsChevronDown />
-                      <div className="invisible absolute left-[50%] top-[50%] z-[1000] flex w-[200px] translate-x-[-50%] translate-y-[3em] flex-col rounded-lg bg-gray-700 p-4 text-gray-300 opacity-0 transition-all duration-150 group-hover:visible group-hover:translate-y-[1.65em] group-hover:opacity-100 lg:w-[300px]">
-                        <div className="absolute left-[50%] top-0 -z-10 h-6 w-6 translate-x-[80%] translate-y-[-40%] rotate-45 select-none rounded bg-gray-700"></div>
+                      <div className="invisible absolute left-[50%] top-[50%] z-[1000] flex w-[200px] translate-x-[-50%] translate-y-[3em] flex-col rounded-lg bg-gray-300 p-4 text-gray-300 opacity-0 transition-all duration-150 group-hover:visible group-hover:translate-y-[1.65em] group-hover:opacity-100 lg:w-[300px]">
+                        <div className="absolute left-[50%] top-0 -z-10 h-6 w-6 translate-x-[80%] translate-y-[-40%] rotate-45 select-none rounded bg-gray-300"></div>
                         {loading ? (
                           <p className="text-center">Loading...</p>
                         ) : subLinks && subLinks.length ? (
@@ -163,7 +163,7 @@ const Navbar = () => {
                                   subLink._id
                                 }`} // Concatenate _id with a dash
                               >
-                                <button className="font-semibold bg-gray-200  text-gray-800 border-gray-500 border w-full py-1 rounded-md my-1 hover:bg-gray-800 hover:text-gray-200 ease-linear duration-300">
+                                <button className="font-semibold    text-gray-800   r w-full py-1 rounded-md my-1 hover:bg-gray-200 hover:text-gray-900 ease-linear duration-300">
                                   {subLink.name}
                                 </button>
                               </Link>
