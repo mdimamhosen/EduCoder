@@ -50,12 +50,19 @@ const CoursesTable = ({
     }
   };
 
+  // Helper function to generate random duration
+  const generateRandomDuration = () => {
+    const hours = Math.floor(Math.random() * 4) + 1; // Between 1 and 4 hours
+    const minutes = Math.floor(Math.random() * 60); // Between 0 and 59 minutes
+    return `${hours}hr ${minutes}min`;
+  };
+
   const courseList = Array.isArray(courses) ? courses : [];
 
   return (
     <>
       <div className="overflow-x-auto">
-        <table className="min-w-full table-auto  ">
+        <table className="min-w-full table-auto">
           <thead className="bg-gray-800">
             <tr className="text-left text-sm font-medium uppercase text-gray-300">
               <th className="px-4 py-2">Courses</th>
@@ -116,8 +123,9 @@ const CoursesTable = ({
                       </div>
                     </div>
                   </td>
-                  <td className="px-4 py-4">2hr 30min</td>
-                  <td className="px-4 py-4">₹{course.price}</td>
+                  {/* Generating random time for each course */}
+                  <td className="px-4 py-4">{generateRandomDuration()}</td>
+                  <td className="px-4 py-4">${course.price}</td>
                   <td className="px-4 py-4 flex justify-center space-x-4">
                     <button
                       disabled={loading}
