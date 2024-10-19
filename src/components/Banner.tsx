@@ -7,6 +7,7 @@ import CodeBlocks from "./Core/CodeBlocks";
 import ExploreMore from "./Core/ExploreMore";
 import CompanyShowCase from "./CompanyShowCase";
 import CourseSliderForHomePage from "./CourseSliderForHomePage";
+import CourseSliderForHomePageTopCourse from "./CourseSliderForHomePageTopCourse";
 
 const Banner = () => {
   return (
@@ -125,6 +126,14 @@ const Banner = () => {
         </h1>
 
         <CourseSliderForHomePage />
+      </div>
+      <div className="  mx-auto mb-16   w-11/12 max-w-maxContent">
+        {/* course slider section */}
+        <h1 className="lg:text-4xl text-xl my-10">
+          Our <HighlightText text={"Top"} /> Courses
+        </h1>
+
+        <CourseSliderForHomePageTopCourse />
       </div>
       <div className="border-b-8 border-red-700">
         <ExploreMore />
