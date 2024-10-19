@@ -6,7 +6,6 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-
 const Page = () => {
   const { data: session, status } = useSession();
   const token = session?.user;
@@ -18,25 +17,20 @@ const Page = () => {
   const [totalStudents, setTotalStudents] = useState(0);
 
   useEffect(() => {
-    if (!token?._id) return; // Ensure token is available before making requests
+    if (!token?._id) return;
 
     const fetchData = async () => {
       setLoading(true);
       try {
-        // Fetch instructor data
         const formData = new FormData();
         formData.append("userId", token._id);
         const instructorApiData = await axios.post("/api/user", {
           userId: token._id,
         });
-        // Fetch courses data
         const result = await axios.post("/api/courses", formData);
         console.log(instructorApiData.data.data);
         console.log(result.data.data);
 
-        // Calculate total amount and students
-
-        // Set state based on API responses
 
         setInstructorData(instructorApiData.data.data);
         setCourses(result.data.data || []);
@@ -78,7 +72,6 @@ const Page = () => {
         {!loading && courses.length > 0 ? (
           <div>
             <div className="my-4 flex h-[450px] space-x-4">
-              {/* Render chart / graph */}
               {totalAmount > 0 || totalStudents > 0 ? (
                 <InstructorChart courses={instructorData} />
               ) : (
@@ -89,8 +82,6 @@ const Page = () => {
                   </p>
                 </div>
               )}
-
-              {/* Statistics section */}
               <div className="flex min-w-[250px] flex-col rounded-md bg-gray-800 p-6">
                 <p className="text-4xl  font-bold text-gray-100">Statistics</p>
                 <div className="mt-4 space-y-4">
