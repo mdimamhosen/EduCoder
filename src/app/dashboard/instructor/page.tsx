@@ -28,14 +28,19 @@ const Page = () => {
           userId: token._id,
         });
         const result = await axios.post("/api/courses", formData);
-        console.log(instructorApiData.data.data);
-        console.log(result.data.data);
-
+        const totalIncomeWithTotalStudents = await axios.post(
+          "/api/incomewithstudentnumber",
+          {
+            seller: token._id,
+          }
+        );
+        console.log(totalIncomeWithTotalStudents.data.totalIncome);
+        console.log(totalIncomeWithTotalStudents.data.totalStudents);
 
         setInstructorData(instructorApiData.data.data);
         setCourses(result.data.data || []);
-        setTotalAmount(totalIncome);
-        setTotalStudents(totalEnrollments);
+        setTotalAmount(totalIncomeWithTotalStudents.data.totalIncome);
+        setTotalStudents(totalIncomeWithTotalStudents.data.totalStudents);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -45,8 +50,6 @@ const Page = () => {
 
     fetchData();
   }, [token]);
-  const totalIncome = 0;
-  const totalEnrollments = 0;
 
   console.log(instructorData);
   console.log(courses);
@@ -71,9 +74,9 @@ const Page = () => {
         </div>
         {!loading && courses.length > 0 ? (
           <div>
-            <div className="my-4 flex h-[450px] space-x-4">
+            <div className="my-4 flex flex-col lg:flex-row lg:h-[450px] space-y-4 lg:space-y-0 lg:space-x-4">
               {totalAmount > 0 || totalStudents > 0 ? (
-                <InstructorChart courses={instructorData} />
+                <InstructorChart courses={courses} />
               ) : (
                 <div className="flex-1 rounded-md bg-gray-800 p-6">
                   <p className="text-2xl font-bold text-gray-300">Visualize</p>
@@ -82,7 +85,7 @@ const Page = () => {
                   </p>
                 </div>
               )}
-              <div className="flex min-w-[250px] flex-col rounded-md bg-gray-800 p-6">
+              <div className="flex lg:min-w-[250px] flex-col rounded-md bg-gray-800 p-6">
                 <p className="text-4xl  font-bold text-gray-100">Statistics</p>
                 <div className="mt-4 space-y-4">
                   <div>
@@ -108,7 +111,7 @@ const Page = () => {
             </div>
 
             {/* Courses section */}
-            <div className="rounded-md bg-gray-800 p-6">
+            <div className="rounded-md bg-gray-800 p-6 hidden lg:block">
               <div className="flex items-center justify-between">
                 <p className="text-3xl font-bold text-gray-100">Your Courses</p>
                 <Link href="/dashboard/my-courses">
@@ -120,6 +123,76 @@ const Page = () => {
               <div className="my-4 flex items-start space-x-6">
                 {courses.slice(0, 3).map((course) => (
                   <div key={course._id} className="w-1/3  ">
+                    <img
+                      src={course.thumbnail}
+                      alt={course.courseName}
+                      className="h-[201px] w-full rounded-md object-cover"
+                    />
+                    <div className="mt-3 w-full">
+                      <p className="text-lg font-medium text-gray-50">
+                        {course.courseName}
+                      </p>
+                      <div className="mt-1 flex items-center space-x-2">
+                        <p className="text-xs font-medium text-gray-300">
+                          {course.studentsEnrolled.length} students
+                        </p>
+                        <p className="text-xs font-medium text-gray-300">|</p>
+                        <p className="text-xs font-medium text-gray-300">
+                          USD. {course.price}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="rounded-md bg-gray-800 p-6 lg:hidden">
+              <div className="flex items-center justify-between">
+                <p className="text-3xl font-bold text-gray-100">Your Courses</p>
+                <Link href="/dashboard/my-courses">
+                  <p className="text-lg font-semibold text-yellow-400">
+                    View All
+                  </p>
+                </Link>
+              </div>
+              <div className="my-4 flex items-start space-x-6">
+                {courses.slice(0, 1).map((course) => (
+                  <div key={course._id} className="w-full  ">
+                    <img
+                      src={course.thumbnail}
+                      alt={course.courseName}
+                      className="h-[201px] w-full rounded-md object-cover"
+                    />
+                    <div className="mt-3 w-full">
+                      <p className="text-lg font-medium text-gray-50">
+                        {course.courseName}
+                      </p>
+                      <div className="mt-1 flex items-center space-x-2">
+                        <p className="text-xs font-medium text-gray-300">
+                          {course.studentsEnrolled.length} students
+                        </p>
+                        <p className="text-xs font-medium text-gray-300">|</p>
+                        <p className="text-xs font-medium text-gray-300">
+                          USD. {course.price}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="rounded-md bg-gray-800 p-6 hidden md:block lg:hidden">
+              <div className="flex items-center justify-between">
+                <p className="text-3xl font-bold text-gray-100">Your Courses</p>
+                <Link href="/dashboard/my-courses">
+                  <p className="text-lg font-semibold text-yellow-400">
+                    View All
+                  </p>
+                </Link>
+              </div>
+              <div className="my-4 flex items-start space-x-6">
+                {courses.slice(0, 2).map((course) => (
+                  <div key={course._id} className="w-1/2  ">
                     <img
                       src={course.thumbnail}
                       alt={course.courseName}

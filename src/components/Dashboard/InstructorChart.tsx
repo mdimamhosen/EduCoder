@@ -25,7 +25,7 @@ export default function InstructorChart({ courses }) {
     labels: courses.map((course) => course.courseName),
     datasets: [
       {
-        data: courses.map((course) => course.totalStudentsEnrolled),
+        data: courses.map((course) => course.studentsEnrolled.length), // Use the length of studentsEnrolled array
         backgroundColor: generateRandomColors(courses.length),
       },
     ],
@@ -36,7 +36,9 @@ export default function InstructorChart({ courses }) {
     labels: courses.map((course) => course.courseName),
     datasets: [
       {
-        data: courses.map((course) => course.totalAmountGenerated),
+        data: courses.map(
+          (course) => course.price * course.studentsEnrolled.length
+        ), // Calculate income based on price and number of enrolled students
         backgroundColor: generateRandomColors(courses.length),
       },
     ],
@@ -48,33 +50,35 @@ export default function InstructorChart({ courses }) {
   };
 
   return (
-    <div className="flex flex-1 flex-col gap-y-4 rounded-md bg-richblack-800 p-6">
-      <p className="text-lg font-bold text-richblack-5">Visualize</p>
-      <div className="space-x-4 font-semibold">
-        {/* Button to switch to the "students" chart */}
-        <button
-          onClick={() => setCurrChart("students")}
-          className={`rounded-sm p-1 px-3 transition-all duration-200 ${
-            currChart === "students"
-              ? "bg-richblack-700 text-yellow-50"
-              : "text-yellow-400"
-          }`}
-        >
-          Students
-        </button>
-        {/* Button to switch to the "income" chart */}
-        <button
-          onClick={() => setCurrChart("income")}
-          className={`rounded-sm p-1 px-3 transition-all duration-200 ${
-            currChart === "income"
-              ? "bg-richblack-700 text-yellow-50"
-              : "text-yellow-400"
-          }`}
-        >
-          Income
-        </button>
+    <div className="flex flex-1 flex-col gap-y-4 rounded-md bg-gray-800 p-6">
+      <div className="flex flex-col lg:flex-row items-center gap-3">
+        <p className="text-xl font-bold text-gray-100">Visualize</p>
+        <div className="space-x-4  font-semibold">
+          {/* Button to switch to the "students" chart */}
+          <button
+            onClick={() => setCurrChart("students")}
+            className={`rounded-sm p-1 px-3 transition-all duration-200 ${
+              currChart === "students"
+                ? "bg-gray-900 text-yellow-400"
+                : "text-yellow-400"
+            }`}
+          >
+            Students
+          </button>
+          {/* Button to switch to the "income" chart */}
+          <button
+            onClick={() => setCurrChart("income")}
+            className={`rounded-sm p-1 px-3 transition-all duration-200 ${
+              currChart === "income"
+                ? "bg-yellow-400 text-gray-900"
+                : "text-yellow-400"
+            }`}
+          >
+            Income
+          </button>
+        </div>
       </div>
-      <div className="relative mx-auto aspect-square h-full w-full">
+      <div className=" flex justify-center items-center mx-auto aspect-square  w-[70%] h-[70%]   ">
         {/* Render the Pie chart based on the selected chart */}
         <Pie
           data={currChart === "students" ? chartDataStudents : chartIncomeData}
